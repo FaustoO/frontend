@@ -47,7 +47,6 @@ const DatePickerForm: React.FC<DatePickerFormProps> = props => {
     setDefaultEndDate(active2)
   }, [])
   const handleActiveStartDate = (date: Date | null) => {
-    console.log("here m sorry", date?.getMonth())
     let activemonth: any = date?.getMonth()
     let active: any = new Date()
     let dd = String(date?.getDate()).padStart(2, "0")
@@ -70,12 +69,9 @@ const DatePickerForm: React.FC<DatePickerFormProps> = props => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault()
-    console.log("heyyooo", activeStartDate)
-    console.log("yesyesyov", activeEndDate)
     const ActiveStarDateClean = activeStartDate || defaultStartDate
     const ActiveEndDateClean = activeEndDate || defaultEndDate
 
-    console.log("yep", ActiveEndDateClean, ActiveStarDateClean)
     await axios
       .put(`project/detail/${props.id}`, {
         user: props.user,
@@ -83,10 +79,8 @@ const DatePickerForm: React.FC<DatePickerFormProps> = props => {
         startDate: ActiveStarDateClean,
         plannedEndDate: ActiveEndDateClean
       })
-      .then(res => {
-        console.log(res.data)
-      })
-      .catch(err => console.log(err.response.data.non_field_errors))
+      .then(res => {})
+      .catch(err => prompt(err.response.data.non_field_errors))
   }
 
   return (
@@ -98,6 +92,7 @@ const DatePickerForm: React.FC<DatePickerFormProps> = props => {
         onSubmit={handleSubmit}
       >
         <DatePicker
+          projecttype={props.typeofproject}
           handleStartDate={handleActiveStartDate}
           handleEndDate={handleActivePlanningEndDate}
           defaultStartData={props.defaultStartData}

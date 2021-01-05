@@ -3,16 +3,18 @@ import React from "react"
 import DateFnsUtils from "@date-io/date-fns"
 import {
   MuiPickersUtilsProvider,
-  KeyboardTimePicker,
   KeyboardDatePicker
 } from "@material-ui/pickers"
 import styled from "styled-components"
+import CalendarIcon from "../../static/svgicon/calendar.svg"
+import CleanTypeOfData from "../../functions/cleaningData"
 
 interface DatePickerProps {
   defaultStartData?: string
   defaultPlannedEndData?: string
   handleStartDate: any
   handleEndDate: any
+  projecttype: string
 }
 
 const DatePickerContainer = styled.div`
@@ -26,18 +28,40 @@ const DetailContentHeader = styled.div`
   width: 100%;
   flex-wrap: wrap;
 `
+
 const ProjectTypeContainer = styled.div`
   display: flex;
   justify-content: flex-end;
+  flex-direction: column;
   width: 65%;
 `
+const ProjectTypeLabelText = styled.div`
+  display: flex;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 14px;
+  letter-spacing: 0em;
+  text-align: left;
+  justify-content: flex-end;
+  color: rgba(228, 220, 0, 0.7);
+`
+const ExactProjectText = styled.div`
+  display: flex;
+  color: rgba(240, 240, 255, 0.7);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
+  letter-spacing: 0em;
+  text-align: left;
+  justify-content: flex-end;
+`
+const CalendarIconComp = styled.img``
+
 const DatePicker: React.FC<DatePickerProps> = props => {
   // The first commit of Material-UI
-  const keyboardDatePickerRef = React.useRef<any>()
 
-  const [selectedDate, setSelectedDate] = React.useState<Date | null>(
-    new Date("2014-08-18T21:11:54")
-  )
   const [ActiveStartDate, setActiveStartDate] = React.useState<any | Date>(
     props.defaultStartData
   )
@@ -45,17 +69,12 @@ const DatePicker: React.FC<DatePickerProps> = props => {
   const [ActivePlannedDate, setActivePlannedDate] = React.useState<any>(
     props.defaultPlannedEndData
   )
-  React.useEffect(() => {
-    console.log(keyboardDatePickerRef)
-  }, [keyboardDatePickerRef])
 
   const handleStartDateChange = (date: any | null) => {
-    console.log("you changed", date)
     setActiveStartDate(date)
     // const strdata =
     //   ActiveStartDate?.getDate() +
     //   "-" +
-    console.log(keyboardDatePickerRef)
     //   ActiveStartDate?.getMonth() +
     //   "-" +
     //   ActiveStartDate?.getFullYear()
@@ -74,9 +93,9 @@ const DatePicker: React.FC<DatePickerProps> = props => {
       getbutton[1].setAttribute("type", "submit")
       getbutton[0].setAttribute("form", "datepickerform")
       getbutton[1].setAttribute("form", "datepickerform")
-      console.log(getbutton)
     }
   }, [onFocus])
+
   return (
     <DetailContentHeader>
       <DatePickerContainer>
@@ -116,11 +135,11 @@ const DatePicker: React.FC<DatePickerProps> = props => {
             }}
             onChange={handleStartDateChange}
             KeyboardButtonProps={{
-              "aria-label": "change date",
-              onClick: () => {
-                console.log("hey günaydın")
-              }
+              "aria-label": "change date"
             }}
+            keyboardIcon={
+              <CalendarIconComp src={CalendarIcon}></CalendarIconComp>
+            }
           />
           <KeyboardDatePicker
             margin="normal"
@@ -141,6 +160,9 @@ const DatePicker: React.FC<DatePickerProps> = props => {
                 textAlign: "left"
               }
             }}
+            keyboardIcon={
+              <CalendarIconComp src={CalendarIcon}></CalendarIconComp>
+            }
             InputProps={{
               style: {
                 borderBottom: "2px solid white",
@@ -162,7 +184,12 @@ const DatePicker: React.FC<DatePickerProps> = props => {
           />
         </MuiPickersUtilsProvider>
       </DatePickerContainer>
-      <ProjectTypeContainer>Project type</ProjectTypeContainer>
+      <ProjectTypeContainer>
+        <ProjectTypeLabelText>Project Type</ProjectTypeLabelText>
+        <ExactProjectText>
+          {CleanTypeOfData(props.projecttype).stringprojectname}
+        </ExactProjectText>
+      </ProjectTypeContainer>
     </DetailContentHeader>
   )
 }

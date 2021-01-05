@@ -1,7 +1,7 @@
 import axios from "axios"
 
 const axiosConfig = {
-  baseURL: "https://rocky-springs-97474.herokuapp.com/"
+  baseURL: "http://127.0.0.1:8000/"
 }
 const myaxios = axios.create(axiosConfig)
 export default myaxios
