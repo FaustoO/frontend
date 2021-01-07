@@ -10,6 +10,7 @@ import {
 } from "../ui/ConstantUi"
 import DiscardSvgIcon from "../../static/svgicon/discard.svg"
 import AcceptIcon from "../../static/svgicon/accept.svg"
+import { stringify } from "querystring"
 
 export interface DescriptionBoxTextAreaProps {
   id: string
@@ -59,7 +60,7 @@ const DescriptionInput = styled.textarea`
 
 const DescriptionBoxTextArea: React.FC<DescriptionBoxTextAreaProps> = props => {
   const [activeDescriptionText, setActiveDescriptionText] = React.useState<
-    string | null
+    string | any
   >("")
   const [processName, setProcessName] = React.useState<string>("")
   const [defaultValue, setDefaultValue] = React.useState<string | null>(
@@ -67,14 +68,22 @@ const DescriptionBoxTextArea: React.FC<DescriptionBoxTextAreaProps> = props => {
   )
   const InputBoxRef = React.useRef<React.MutableRefObject<any> | any>()
   React.useEffect(() => {
+    if (processName === "Discard") {
+      console.log("that run")
+      InputBoxRef.current.value = defaultValue
+    }
+  }, [processName])
+  React.useEffect(() => {
     InputBoxRef.current.value = defaultValue
   }, [])
   const handleDescriptionBoxSubmit = async (e: any) => {
     e.preventDefault()
-    setDefaultValue(activeDescriptionText)
+    console.log("ya bırak ya")
+
     if (activeDescriptionText === "") {
     } else {
       if (processName === "Save") {
+        console.log("saved")
         await axios
           .put(`project/detail/${props.id}`, {
             user: props.user,
@@ -83,19 +92,6 @@ const DescriptionBoxTextArea: React.FC<DescriptionBoxTextAreaProps> = props => {
           })
           .then(res => {
             InputBoxRef.current.value = activeDescriptionText
-          })
-          .catch(err => prompt(err.response))
-      } else if (processName === "Discard") {
-        await axios
-          .put(`project/detail/${props.id}`, {
-            user: props.user,
-            typeofproject: props.typeofproject,
-            description: ""
-          })
-          .then(res => {
-            setActiveDescriptionText("")
-            setDefaultValue("")
-            InputBoxRef.current.value = ""
           })
           .catch(err => prompt(err.response))
       }
@@ -130,10 +126,13 @@ const DescriptionBoxTextArea: React.FC<DescriptionBoxTextAreaProps> = props => {
         </IconButton>
         <IconButton
           disabled={!activeDescriptionText}
-          onClick={() => setProcessName("Discard")}
+          onBlur={() => {
+            setProcessName("")
+          }}
+          onClick={() => {
+            setProcessName("Discard")
+          }}
           id="discardbutton"
-          type="submit"
-          form="descriptionboxform"
         >
           <DiscardIcon src={DiscardSvgIcon}></DiscardIcon>
         </IconButton>

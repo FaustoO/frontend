@@ -295,7 +295,6 @@ export const DetailContent = styled.div`
 `
 export const DetailContentContainer = styled.div`
   display: flex;
-  flex-wrap: wrap;
   height: 100%;
   width: 100%;
   flex-direction: column;

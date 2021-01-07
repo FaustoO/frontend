@@ -4,7 +4,9 @@ import styled from "styled-components"
 import { Button } from "@material-ui/core"
 import axios from "../../functions/axios"
 import { useHistory } from "react-router-dom"
-export interface CreateProjectRadioInputFormsProps {}
+export interface CreateProjectRadioInputFormsProps {
+  ActualClickHandle: any
+}
 const Form = styled.form`
   display: flex;
   height: 100%;
@@ -24,7 +26,7 @@ const CreateProjectRadioInputSubmitButton = styled.div`
   border: 3px solid #484862;
 `
 
-const CreateProjectRadioInputForms: React.FC<CreateProjectRadioInputFormsProps> = () => {
+const CreateProjectRadioInputForms: React.FC<CreateProjectRadioInputFormsProps> = props => {
   const [value, setValue] = React.useState("S")
   const history = useHistory()
   const handleChange = (event: any) => {
@@ -69,6 +71,7 @@ const CreateProjectRadioInputForms: React.FC<CreateProjectRadioInputFormsProps> 
               fontWeight: "inherit",
               fontFamily: "Aileron"
             }}
+            onClick={props.ActualClickHandle}
           >
             Create Project
           </Button>

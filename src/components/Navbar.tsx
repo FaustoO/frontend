@@ -27,7 +27,9 @@ const Navbar: React.FC<NavbarProps> = props => {
   const history = useHistory()
   const DropDawnMenuContainerRef = React.useRef<any>(null)
   const CreateNewProjectButtonRef = React.useRef<any>(null)
-
+  const ActualCreateProjectClickHandle = () => {
+    setCreateMenu(false)
+  }
   const handleClickOutside = (e: any) => {
     if (
       !DropDawnMenuContainerRef.current?.contains(e.target) &&
@@ -86,7 +88,9 @@ const Navbar: React.FC<NavbarProps> = props => {
                 </DropDownHintText>
               </DropDownHeaderContainer>
               <DropDownMenuBody>
-                <CreateProjectRadioInputForms></CreateProjectRadioInputForms>
+                <CreateProjectRadioInputForms
+                  ActualClickHandle={ActualCreateProjectClickHandle}
+                ></CreateProjectRadioInputForms>
               </DropDownMenuBody>
             </DropDownCreateMenuContainer>
             <SettingsIconElement src={SettingsIcon}></SettingsIconElement>
