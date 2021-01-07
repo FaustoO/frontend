@@ -1,22 +1,22 @@
-import styled from "styled-components"
-import React from "react"
-import axios from "../../functions/axios"
-import { IconButton } from "@material-ui/core"
+import styled from "styled-components";
+import React from "react";
+import axios from "../../functions/axios";
+import { IconButton } from "@material-ui/core";
 import {
   DescriptionBoxContainer,
   SaveIcon,
   SaveDiscardContainer,
-  DiscardIcon
-} from "../ui/ConstantUi"
-import DiscardSvgIcon from "../../static/svgicon/discard.svg"
-import AcceptIcon from "../../static/svgicon/accept.svg"
-import { stringify } from "querystring"
+  DiscardIcon,
+} from "../ui/ConstantUi";
+import DiscardSvgIcon from "../../static/svgicon/discard.svg";
+import AcceptIcon from "../../static/svgicon/accept.svg";
+import { stringify } from "querystring";
 
 export interface DescriptionBoxTextAreaProps {
-  id: string
-  user: string
-  typeofproject: string
-  defaultValue: null | string
+  id: string;
+  user: string;
+  typeofproject: string;
+  defaultValue: null | string;
 }
 
 const DescriptionInput = styled.textarea`
@@ -35,6 +35,7 @@ const DescriptionInput = styled.textarea`
   -moz-box-shadow: none;
   box-shadow: none;
   overflow-y: auto;
+  font-family: aileron;
 
   background-color: transparent;
 
@@ -56,47 +57,49 @@ const DescriptionInput = styled.textarea`
     border-radius: 10px;
     background: rgba(240, 240, 255, 1);
   }
-`
+`;
 
-const DescriptionBoxTextArea: React.FC<DescriptionBoxTextAreaProps> = props => {
+const DescriptionBoxTextArea: React.FC<DescriptionBoxTextAreaProps> = (
+  props
+) => {
   const [activeDescriptionText, setActiveDescriptionText] = React.useState<
     string | any
-  >("")
-  const [processName, setProcessName] = React.useState<string>("")
+  >("");
+  const [processName, setProcessName] = React.useState<string>("");
   const [defaultValue, setDefaultValue] = React.useState<string | null>(
     props.defaultValue
-  )
-  const InputBoxRef = React.useRef<React.MutableRefObject<any> | any>()
+  );
+  const InputBoxRef = React.useRef<React.MutableRefObject<any> | any>();
   React.useEffect(() => {
     if (processName === "Discard") {
-      console.log("that run")
-      InputBoxRef.current.value = defaultValue
+      console.log("that run");
+      InputBoxRef.current.value = defaultValue;
     }
-  }, [processName])
+  }, [processName]);
   React.useEffect(() => {
-    InputBoxRef.current.value = defaultValue
-  }, [])
+    InputBoxRef.current.value = defaultValue;
+  }, []);
   const handleDescriptionBoxSubmit = async (e: any) => {
-    e.preventDefault()
-    console.log("ya bırak ya")
+    e.preventDefault();
+    console.log("ya bırak ya");
 
     if (activeDescriptionText === "") {
     } else {
       if (processName === "Save") {
-        console.log("saved")
+        console.log("saved");
         await axios
           .put(`project/detail/${props.id}`, {
             user: props.user,
             typeofproject: props.typeofproject,
-            description: activeDescriptionText
+            description: activeDescriptionText,
           })
-          .then(res => {
-            InputBoxRef.current.value = activeDescriptionText
+          .then((res) => {
+            InputBoxRef.current.value = activeDescriptionText;
           })
-          .catch(err => prompt(err.response))
+          .catch((err) => prompt(err.response));
       }
     }
-  }
+  };
 
   return (
     <>
@@ -107,9 +110,10 @@ const DescriptionBoxTextArea: React.FC<DescriptionBoxTextAreaProps> = props => {
           style={{ display: "flex", width: "100%" }}
         >
           <DescriptionInput
+            style={{ fontFamily: "aileron" }}
             ref={InputBoxRef}
             onChange={(e: any) => {
-              setActiveDescriptionText(e.target.value)
+              setActiveDescriptionText(e.target.value);
             }}
           ></DescriptionInput>
         </form>
@@ -127,10 +131,10 @@ const DescriptionBoxTextArea: React.FC<DescriptionBoxTextAreaProps> = props => {
         <IconButton
           disabled={!activeDescriptionText}
           onBlur={() => {
-            setProcessName("")
+            setProcessName("");
           }}
           onClick={() => {
-            setProcessName("Discard")
+            setProcessName("Discard");
           }}
           id="discardbutton"
         >
@@ -138,7 +142,7 @@ const DescriptionBoxTextArea: React.FC<DescriptionBoxTextAreaProps> = props => {
         </IconButton>
       </SaveDiscardContainer>
     </>
-  )
-}
+  );
+};
 
-export default DescriptionBoxTextArea
+export default DescriptionBoxTextArea;
