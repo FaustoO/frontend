@@ -13,7 +13,17 @@ import React from "react"
 import OverviewProject from "./screens/Overview"
 import ProjectDetailPageProps from "./screens/ProjectDetails"
 import axios from "../functions/axios"
+import DragComponent from "./ui/Draggable"
 export interface BaseProps {}
+
+function NavbarComponent() {
+  let location = useLocation()
+  if (location.pathname.includes("project/detail")) {
+    return <Navbar context={"Projects"}></Navbar>
+  }
+
+  return <Navbar></Navbar>
+}
 
 const BaseApp: React.FC<BaseProps> = () => {
   const [detailPage, setDetailPage] = React.useState<boolean>(false)
@@ -26,18 +36,20 @@ const BaseApp: React.FC<BaseProps> = () => {
   }, [window.location.href, detailPage])
   return (
     <Router>
-      <Navbar></Navbar>
-      <BodyComponent>
-        <Switch>
-          <Route exact path="/" />
-          <Route path="/project/all" component={OverviewProject} />
-          <Route
-            path="/project/detail/:id"
-            component={ProjectDetailPageProps}
-          />
-          <Route path="/users" />
-        </Switch>
-      </BodyComponent>
+      <Route>
+        <NavbarComponent></NavbarComponent>
+        <BodyComponent>
+          <Switch>
+            <Route exact path="/" />
+            <Route path="/project/all" component={OverviewProject} />
+            <Route
+              path="/project/detail/:id"
+              component={ProjectDetailPageProps}
+            />
+            <Route path="/users" />
+          </Switch>
+        </BodyComponent>
+      </Route>
     </Router>
   )
 }

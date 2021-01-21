@@ -1,12 +1,12 @@
 import Checkbox from "../ui/Checkbox"
 import React from "react"
-import { CreateNewProjectButtonContainer } from "../Navbar"
 import styled from "styled-components"
 import { Button } from "@material-ui/core"
 import axios from "../../functions/axios"
 import { useHistory } from "react-router-dom"
-import { LiveTvRounded } from "@material-ui/icons"
-export interface CreateProjectRadioInputFormsProps {}
+export interface CreateProjectRadioInputFormsProps {
+  ActualClickHandle: any
+}
 const Form = styled.form`
   display: flex;
   height: 100%;
@@ -26,7 +26,7 @@ const CreateProjectRadioInputSubmitButton = styled.div`
   border: 3px solid #484862;
 `
 
-const CreateProjectRadioInputForms: React.FC<CreateProjectRadioInputFormsProps> = () => {
+const CreateProjectRadioInputForms: React.FC<CreateProjectRadioInputFormsProps> = props => {
   const [value, setValue] = React.useState("S")
   const history = useHistory()
   const handleChange = (event: any) => {
@@ -43,7 +43,6 @@ const CreateProjectRadioInputForms: React.FC<CreateProjectRadioInputFormsProps> 
     let yyyy = today.getFullYear()
 
     today = mm + "-" + dd + "-" + yyyy
-    console.log(today)
     axios
       .post("project/all/", {
         user: name,
@@ -53,10 +52,9 @@ const CreateProjectRadioInputForms: React.FC<CreateProjectRadioInputFormsProps> 
         plannedEndDate: null
       })
       .then(res => {
-        console.log("heyoo create", res.data)
         history.push(`/project/detail/${res.data.id}`)
       })
-      .catch(err => console.log(err))
+      .catch(err => prompt(err))
   }
 
   return (
@@ -73,6 +71,7 @@ const CreateProjectRadioInputForms: React.FC<CreateProjectRadioInputFormsProps> 
               fontWeight: "inherit",
               fontFamily: "Aileron"
             }}
+            onClick={props.ActualClickHandle}
           >
             Create Project
           </Button>

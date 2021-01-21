@@ -1,11 +1,23 @@
 import styled from "styled-components"
 import React from "react"
 import axios from "../../functions/axios"
+import { IconButton } from "@material-ui/core"
+import {
+  DescriptionBoxContainer,
+  SaveIcon,
+  SaveDiscardContainer,
+  DiscardIcon
+} from "../ui/ConstantUi"
+import DiscardSvgIcon from "../../static/svgicon/discard.svg"
+import AcceptIcon from "../../static/svgicon/accept.svg"
+import { stringify } from "querystring"
+
 export interface DescriptionBoxTextAreaProps {
   id: string
   user: string
   typeofproject: string
   defaultValue: null | string
+  firstTimeChange: boolean
 }
 
 const DescriptionInput = styled.textarea`
@@ -24,6 +36,7 @@ const DescriptionInput = styled.textarea`
   -moz-box-shadow: none;
   box-shadow: none;
   overflow-y: auto;
+  font-family: aileron;
 
   background-color: transparent;
 
@@ -48,41 +61,105 @@ const DescriptionInput = styled.textarea`
 `
 
 const DescriptionBoxTextArea: React.FC<DescriptionBoxTextAreaProps> = props => {
-  const [
-    activeDescriptionText,
-    setActiveDescriptionText
-  ] = React.useState<string>("")
+  const [activeDescriptionText, setActiveDescriptionText] = React.useState<
+    string | any
+  >("")
+  const [withoutSave, setWithoutSave] = React.useState<boolean>(true)
+  const [processName, setProcessName] = React.useState<string>("")
+  const [defaultValue, setDefaultValue] = React.useState<any>([""])
+  const InputBoxRef = React.useRef<React.MutableRefObject<any> | any>()
+  React.useEffect(() => {
+    if (processName === "Discard" && withoutSave && props.firstTimeChange) {
+      setActiveDescriptionText(defaultValue[0])
+      InputBoxRef.current.value = defaultValue[0]
+    } else if (processName === "Discard" && withoutSave) {
+      InputBoxRef.current.value = props.defaultValue
+      setActiveDescriptionText(props.defaultValue)
+    } else if (processName === "Discard") {
+      if (defaultValue.length == 2) {
+        setActiveDescriptionText(props.defaultValue)
+        InputBoxRef.current.value = props.defaultValue
+      } else if (defaultValue.length > 2) {
+        setActiveDescriptionText(defaultValue[defaultValue.length - 2])
+        InputBoxRef.current.value = defaultValue[defaultValue.length - 2]
+      } else {
+        setActiveDescriptionText(defaultValue[0])
+        InputBoxRef.current.value = defaultValue[0]
+      }
+    }
+  }, [processName])
+  React.useEffect(() => {
+    if (props.firstTimeChange) {
+      //pass
+      InputBoxRef.current.value = defaultValue[0]
+    } else {
+      InputBoxRef.current.value = props.defaultValue
+    }
+  }, [])
   const handleDescriptionBoxSubmit = async (e: any) => {
     e.preventDefault()
-    console.log("description box sumbittied")
+
     if (activeDescriptionText === "") {
     } else {
-      await axios
-        .put(`project/detail/${props.id}`, {
-          user: props.user,
-          typeofproject: props.typeofproject,
-          description: activeDescriptionText
-        })
-        .then(res => {
-          console.log(res.data)
-        })
-        .catch(err => console.log(err.response))
+      if (processName === "Save") {
+        await axios
+          .put(`project/detail/${props.id}`, {
+            user: props.user,
+            typeofproject: props.typeofproject,
+            description: activeDescriptionText
+          })
+          .then(res => {
+            setWithoutSave(false)
+            setDefaultValue([...defaultValue, res.data.description])
+            InputBoxRef.current.value = res.data.description
+          })
+          .catch(err => prompt(err.response))
+      }
     }
   }
-  const handleDescriptionTextChange = (e: any) => {
-    setActiveDescriptionText(e.target.value)
-  }
+
   return (
     <>
-      <form
-        onSubmit={handleDescriptionBoxSubmit}
-        id="descriptionboxform"
-        style={{ display: "flex", width: "100%" }}
-      >
-        <DescriptionInput onChange={handleDescriptionTextChange}>
-          {props.defaultValue}
-        </DescriptionInput>
-      </form>
+      <DescriptionBoxContainer>
+        <form
+          onSubmit={handleDescriptionBoxSubmit}
+          id="descriptionboxform"
+          style={{ display: "flex", width: "100%" }}
+        >
+          <DescriptionInput
+            style={{ fontFamily: "aileron" }}
+            ref={InputBoxRef}
+            onChange={(e: any) => {
+              setActiveDescriptionText(e.target.value)
+            }}
+          ></DescriptionInput>
+        </form>
+      </DescriptionBoxContainer>
+      <SaveDiscardContainer>
+        <IconButton
+          disabled={!activeDescriptionText}
+          onClick={() => {
+            setProcessName("Save")
+          }}
+          id="savebutton"
+          type="submit"
+          form="descriptionboxform"
+        >
+          <SaveIcon src={AcceptIcon}></SaveIcon>
+        </IconButton>
+        <IconButton
+          disabled={!activeDescriptionText}
+          onBlur={() => {
+            setProcessName("")
+          }}
+          onClick={() => {
+            setProcessName("Discard")
+          }}
+          id="discardbutton"
+        >
+          <DiscardIcon src={DiscardSvgIcon}></DiscardIcon>
+        </IconButton>
+      </SaveDiscardContainer>
     </>
   )
 }
