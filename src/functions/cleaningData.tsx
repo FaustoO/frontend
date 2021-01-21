@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 const calculateMilestonesPositioning = list => {
   let firstOneStartDate: any = new Date()
 
@@ -27,8 +26,6 @@ const calculateMilestonesPositioning = list => {
     }
   })
 }
-=======
->>>>>>> 4de63d3c83a6eb5425ccdcb167760f1e4618264d
 const CleanTypeOfData = (projecttype: string) => {
   let stringprojectname = ""
   if (projecttype === "S") {
@@ -40,7 +37,6 @@ const CleanTypeOfData = (projecttype: string) => {
   }
   return { stringprojectname }
 }
-<<<<<<< HEAD
 const Convertpercentage = (value: number | any | undefined) => {
   let convertednumber = value * 10
   let converted = Math.round(convertednumber)
@@ -91,7 +87,3 @@ export {
   LinearProgressBarCleaningData,
   calculateMilestonesPositioning
 }
-=======
-
-export default CleanTypeOfData
->>>>>>> 4de63d3c83a6eb5425ccdcb167760f1e4618264d
