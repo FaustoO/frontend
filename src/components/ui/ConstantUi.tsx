@@ -444,7 +444,7 @@ export const MilestonesWrapper = styled.div`
   max-width: 100%;
   flex-basis: 100%;
   justify-content: space-between;
-
+  background-color: #373752;
   flex-direction: row;
   flex-grow: 0;
   margin-bottom: 11px;

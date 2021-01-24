@@ -39,8 +39,8 @@ const CircleProgressContent: React.FC<CircleProgressContentProps> = props => {
           width: props.smallSize ? "48px" : "188px"
         }}
         top={0}
-        left={0}
-        bottom={0}
+        left={props.smallSize ? -1.5 : 0}
+        bottom={props.smallSize ? -3 : 0}
         right={0}
         position="absolute"
         display="flex"
@@ -61,8 +61,8 @@ const CircleProgressContent: React.FC<CircleProgressContentProps> = props => {
             minWidth: "80%",
             justifyContent: "center",
             alignItems: "center",
-            backgroundColor: "#32324D",
-            borderRadius: "50%",
+            backgroundColor: props.smallSize ? "#373752" : "#32324D",
+            borderRadius: props.smallSize ? "80%" : "50%",
             display: "inline-flex",
             color: "rgba(240, 240, 255, 1)"
           }}

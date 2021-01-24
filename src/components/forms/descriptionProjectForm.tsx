@@ -18,6 +18,7 @@ export interface DescriptionBoxTextAreaProps {
   typeofproject: string
   defaultValue: null | string
   firstTimeChange: boolean
+  callbackFunction: any
 }
 
 const DescriptionInput = styled.textarea`
@@ -111,6 +112,7 @@ const DescriptionBoxTextArea: React.FC<DescriptionBoxTextAreaProps> = props => {
           .then(res => {
             setWithoutSave(false)
             setDefaultValue([...defaultValue, res.data.description])
+            props.callbackFunction()
             InputBoxRef.current.value = res.data.description
           })
           .catch(err => prompt(err.response))

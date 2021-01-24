@@ -10,6 +10,7 @@ export interface EditFormProjectProps {
   typeofproject: string
   defaultValue: string
   isnamechanged: boolean
+  callbackFunction: any
 }
 
 export const SubmitButton = styled.button`
@@ -55,13 +56,7 @@ const EditForm: React.FC<EditFormProjectProps> = props => {
           isnamechanged: true
         })
         .then(res => {
-          seteditActiveArray([...editActiveArray, activeProjectName])
-          setActiveProjectName("")
-          setLabel(
-            activeProjectName.charAt(0).toUpperCase() +
-              activeProjectName.slice(1)
-          )
-          setisNameChanged(true)
+          props.callbackFunction()
         })
         .catch(err => prompt(err))
     }

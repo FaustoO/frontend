@@ -20,6 +20,7 @@ export interface DatePickerFormProps {
   typeofproject: string
   defaultStartData?: string
   defaultPlannedEndData?: string
+  callbackFunction: any
 }
 
 const DatePickerForm: React.FC<DatePickerFormProps> = props => {
@@ -79,7 +80,9 @@ const DatePickerForm: React.FC<DatePickerFormProps> = props => {
         startDate: ActiveStarDateClean,
         plannedEndDate: ActiveEndDateClean
       })
-      .then(res => {})
+      .then(res => {
+        props.callbackFunction()
+      })
       .catch(err => prompt(err.response.data.non_field_errors))
   }
 
