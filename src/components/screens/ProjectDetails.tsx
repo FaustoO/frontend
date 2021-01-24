@@ -84,22 +84,7 @@ const ProjectDetailPage: React.FC<Props> = props => {
       })
       .catch(err => prompt(err))
   }
-
-  React.useEffect(() => {
-    getdata()
-  }, [props.match.params])
-
-  const addMilestoneFunction = async (main_project_id: any) => {
-    return await axios.post("project/milestones/create", {
-      main_project: main_project_id
-    })
-    // axios.post('milestones/create',{
-    //   main_project=
-
-    // })
-  }
-
-  const LoadedData: any = () => {
+  const ProjectDetailContent: any = React.useCallback(() => {
     return data?.map((elm, index) => (
       <ProjectDetailsContainer key={index}>
         <LeftAside>
@@ -128,6 +113,7 @@ const ProjectDetailPage: React.FC<Props> = props => {
             <TopHeaderTitleBox>
               <ProjectNameInputContainer style={{ marginTop: "5px" }}>
                 <EditForm
+                  callbackFunction={getdata}
                   isnamechanged={elm.isnamechanged}
                   user={elm.user}
                   defaultValue={elm.isnamechanged === true ? elm.goal : ""}
@@ -204,6 +190,7 @@ const ProjectDetailPage: React.FC<Props> = props => {
             <DetailContentContainer key={index}>
               {" "}
               <DatePickerForm
+                callbackFunction={getdata}
                 user={elm.user}
                 typeofproject={elm.typeofproject}
                 defaultStartData={elm.startDate}
@@ -223,6 +210,7 @@ const ProjectDetailPage: React.FC<Props> = props => {
                 Description{" "}
               </span>
               <DescriptionBoxTextArea
+                callbackFunction={getdata}
                 id={elm.id}
                 typeofproject={elm.typeofproject}
                 user={elm.user}
@@ -234,9 +222,29 @@ const ProjectDetailPage: React.FC<Props> = props => {
         </DetailContent>
       </ProjectDetailsContainer>
     ))
+  }, [data, milestonesTab])
+  React.useEffect(() => {
+    getdata()
+  }, [props.match.params])
+
+  const addMilestoneFunction = async (main_project_id: any) => {
+    return await axios
+      .post("project/milestones/create", {
+        main_project: main_project_id
+      })
+      .then(res => getdata())
+      .catch(err => console.log(err))
+    // axios.post('milestones/create',{
+    //   main_project=
+
+    // })
   }
 
-  return data ? <LoadedData></LoadedData> : <h2>404 Detailed Not Found</h2>
+  return data ? (
+    <ProjectDetailContent></ProjectDetailContent>
+  ) : (
+    <h2>404 Detailed Not Found</h2>
+  )
 }
 
 export default ProjectDetailPage
