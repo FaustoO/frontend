@@ -7,7 +7,8 @@ import BigPointer from "../../static/svgicon/bigpointer.svg"
 import MilestonePointer from "../../static/svgicon/milestonepointer.svg"
 import {
   calculateMilestonesPositioning,
-  ConvertDateFormat
+  ConvertDateFormat,
+  calculateDatesPositioning
 } from "../../functions/cleaningData"
 import {
   Convertpercentage,
@@ -27,9 +28,15 @@ const MainContainerBody = styled.div<{ small?: boolean }>`
     p.small
       ? "flex-basis: 20%; min-width: 20%;max-height: 12px;min-height: 12px;"
       : "flex-basis: 100%; min-width: 100%;max-height: 23px;min-height: 23px;"}
-  background: #636380;
+
   flex-grow: 0;
   border-radius: 5px;
+`
+const MainContainerGrayArea = styled.div<{ width: number }>`
+  background: ${p =>
+    `linear-gradient(to right, #636380 0%, #636380 ${p.width}%, transparent ${p.width}%, transparent 100%)`};
+  display: flex;
+  width: 100%;
   padding: 4.19px 7px 4.27px 7px;
 `
 const MainContainerTop = styled.div<{ small?: boolean }>`
@@ -112,6 +119,22 @@ const LinearProgressBar: React.FC<LinearProgressBarProps> = props => {
   //   //   LinearProgressBarCleaningData(props.value[0]).percentageTimeDifference
   //   // )
   // })
+  React.useEffect(() => {
+    console.log(
+      "Complete Check",
+      calculateMilestonesPositioning(
+        props.value[6],
+        calculateDatesPositioning(
+          props.value[5],
+          props.value[2],
+          props.value[1],
+          props.value[0],
+          props.value[4],
+          props.value[3]
+        ).fullWidth
+      )
+    )
+  }, [])
 
   return (
     <TopHeaderStatusBarContainer>
@@ -125,7 +148,7 @@ const LinearProgressBar: React.FC<LinearProgressBarProps> = props => {
             >
               <SmallPointerIcon
                 id="startdate"
-                position={0}
+                position={-1}
                 src={SmallPointer}
               ></SmallPointerIcon>
             </Tooltip>
@@ -134,15 +157,32 @@ const LinearProgressBar: React.FC<LinearProgressBarProps> = props => {
         <Tooltip
           title={`Project Progress %${
             props.value[6].length > 1
-              ? Convertpercentage(props.value[4]).converted
+              ? Math.round(
+                  calculateDatesPositioning(
+                    props.value[5],
+                    props.value[2],
+                    props.value[1],
+                    props.value[0],
+                    props.value[4],
+                    props.value[3]
+                  ).progressofproject
+                )
               : 0
           }`}
         >
           <BigPointerIcon
             small={props.smallSize}
+            id="progressofproject"
             position={
               props.value[6].length > 1
-                ? Convertpercentage(props.value[4]).converted
+                ? calculateDatesPositioning(
+                    props.value[5],
+                    props.value[2],
+                    props.value[1],
+                    props.value[0],
+                    props.value[4],
+                    props.value[3]
+                  ).progressofproject - 2
                 : 2
             }
             src={BigPointer}
@@ -150,102 +190,161 @@ const LinearProgressBar: React.FC<LinearProgressBarProps> = props => {
         </Tooltip>
         {!props.smallSize && (
           <>
-            <Tooltip
-              title={
-                LinearProgressBarCleaningData(props.value[0]).fullwithEndDate
-                  ? `End Date ${
-                      ConvertDateFormat(props.value[2]).convertedformatdate
-                    }`
-                  : `Planned End Date ${
-                      ConvertDateFormat(props.value[1]).convertedformatdate
-                    }`
-              }
-            >
-              <SmallPointerIcon
-                src={SmallPointer}
-                position={100}
-                id="enddate"
-              ></SmallPointerIcon>
-            </Tooltip>
             {props.value[6].length > 1 && (
               <Tooltip
-                title={
-                  LinearProgressBarCleaningData(props.value[0]).fullwithEndDate
-                    ? `Planned End Date ${
-                        ConvertDateFormat(props.value[1]).convertedformatdate
-                      }`
-                    : `End Date ${
-                        ConvertDateFormat(props.value[2]).convertedformatdate
-                      }`
-                }
+                title={`End Date ${
+                  ConvertDateFormat(props.value[2]).convertedformatdate
+                }`}
+              >
+                <SmallPointerIcon
+                  src={SmallPointer}
+                  position={
+                    calculateDatesPositioning(
+                      props.value[5],
+                      props.value[2],
+                      props.value[1],
+                      props.value[0],
+                      props.value[4],
+                      props.value[3]
+                    ).fullWidth - 1
+                  }
+                  id="enddate"
+                ></SmallPointerIcon>
+              </Tooltip>
+            )}
+            {
+              <Tooltip
+                title={`Planned End Date ${
+                  ConvertDateFormat(props.value[1]).convertedformatdate
+                }`}
               >
                 <PlannedAndDatePointer
                   src={SmallPointer}
                   position={
-                    LinearProgressBarCleaningData(props.value[0])
-                      .fullwithEndDate
-                      ? 100 -
-                        LinearProgressBarCleaningData(props.value[0])
-                          .percentageTimeDifference
-                      : Convertpercentage(props.value[3]).converted +
-                        LinearProgressBarCleaningData(props.value[0])
-                          .percentageTimeDifference
+                    props.value[6].length > 1
+                      ? calculateDatesPositioning(
+                          props.value[5],
+                          props.value[2],
+                          props.value[1],
+                          props.value[0],
+                          props.value[4],
+                          props.value[3]
+                        ).diffstartdateplannedenddate
+                      : 100
                   }
                   id="plannedenddate"
                 ></PlannedAndDatePointer>
               </Tooltip>
-            )}
+            }
           </>
         )}
       </MainContainerTop>
       <Tooltip title="100%">
         <MainContainerBody small={props.smallSize}>
-          {props.value[6].length > 1 && (
+          {
             <>
-              <Tooltip
-                title={`${Convertpercentage(props.value[3]).converted}%`}
+              <MainContainerGrayArea
+                width={
+                  props.value[6].length > 1
+                    ? calculateDatesPositioning(
+                        props.value[5],
+                        props.value[2],
+                        props.value[1],
+                        props.value[0],
+                        props.value[4],
+                        props.value[3]
+                      ).fullWidthGray
+                    : 100
+                }
               >
-                <FirstLine
-                  width={Convertpercentage(props.value[3]).converted}
-                ></FirstLine>
-              </Tooltip>
-              <Tooltip
-                title={`${
-                  LinearProgressBarCleaningData(props.value[0]).fullwithEndDate
-                    ? 100 - Convertpercentage(props.value[3]).converted
-                    : LinearProgressBarCleaningData(props.value[0])
-                        .percentageTimeDifference
-                }%`}
-              >
-                <SecondLine
-                  width={
-                    LinearProgressBarCleaningData(props.value[0])
-                      .fullwithEndDate
-                      ? 100 - Convertpercentage(props.value[3]).converted
-                      : LinearProgressBarCleaningData(props.value[0])
-                          .percentageTimeDifference
-                  }
-                ></SecondLine>
-              </Tooltip>
+                {" "}
+                <Tooltip
+                  title={`${Math.round(
+                    calculateDatesPositioning(
+                      props.value[5],
+                      props.value[2],
+                      props.value[1],
+                      props.value[0],
+                      props.value[4],
+                      props.value[3]
+                    ).firstline
+                  )}%`}
+                >
+                  <FirstLine
+                    width={
+                      calculateDatesPositioning(
+                        props.value[5],
+                        props.value[2],
+                        props.value[1],
+                        props.value[0],
+                        props.value[4],
+                        props.value[3]
+                      ).firstline > 100
+                        ? 100
+                        : calculateDatesPositioning(
+                            props.value[5],
+                            props.value[2],
+                            props.value[1],
+                            props.value[0],
+                            props.value[4],
+                            props.value[3]
+                          ).firstline
+                    }
+                  ></FirstLine>
+                </Tooltip>
+                <Tooltip
+                  title={`${
+                    calculateDatesPositioning(
+                      props.value[5],
+                      props.value[2],
+                      props.value[1],
+                      props.value[0],
+                      props.value[4],
+                      props.value[3]
+                    ).secondlineWidth
+                  }%`}
+                >
+                  <SecondLine
+                    width={Math.round(
+                      calculateDatesPositioning(
+                        props.value[5],
+                        props.value[2],
+                        props.value[1],
+                        props.value[0],
+                        props.value[4],
+                        props.value[3]
+                      ).secondlineWidth
+                    )}
+                  ></SecondLine>
+                </Tooltip>
+              </MainContainerGrayArea>
             </>
-          )}
+          }
         </MainContainerBody>
       </Tooltip>
       {!props.smallSize && (
         <>
           <MainContainerBottom>
-            {calculateMilestonesPositioning(props.value[6]).map(
-              (elm, index) => {
-                return (
-                  <Tooltip title={`Milestone ${index + 1}`}>
-                    <MilestonesIcon
-                      position={elm ? elm : 0}
-                      src={MilestonePointer}
-                    ></MilestonesIcon>
-                  </Tooltip>
-                )
-              }
-            )}
+            {calculateMilestonesPositioning(
+              props.value[6],
+              calculateDatesPositioning(
+                props.value[5],
+                props.value[2],
+                props.value[1],
+                props.value[0],
+                props.value[4],
+                props.value[3]
+              ).fullWidth
+            ).map((elm, index) => {
+              return (
+                <Tooltip title={`Milestone ${index + 1}`}>
+                  <MilestonesIcon
+                    position={elm && props.value[6].length > 1 ? elm : 7}
+                    src={MilestonePointer}
+                  ></MilestonesIcon>
+                </Tooltip>
+              )
+            })}
           </MainContainerBottom>
         </>
       )}

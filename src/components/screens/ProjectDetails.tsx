@@ -81,6 +81,7 @@ const ProjectDetailPage: React.FC<Props> = props => {
       .get(`project/detail/${id}`)
       .then(res => {
         setData([res.data])
+        console.log(res.data)
       })
       .catch(err => prompt(err))
   }
