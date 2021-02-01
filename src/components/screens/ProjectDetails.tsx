@@ -81,7 +81,6 @@ const ProjectDetailPage: React.FC<Props> = props => {
       .get(`project/detail/${id}`)
       .then(res => {
         setData([res.data])
-        console.log(res.data)
       })
       .catch(err => prompt(err))
   }
@@ -125,15 +124,22 @@ const ProjectDetailPage: React.FC<Props> = props => {
             </TopHeaderTitleBox>
 
             <LinearProgressBar
+              // timeDifference={elm.timeDifference}
+              // plannedEndDate={elm.plannedEndDate}
+              // endDate={elm.endDate}
+              // progressOfTime={elm.progressOfTime}
+              // progressOfProject={elm.progressOfProject}
+              // startDate={elm.startDate}
+              // milestones={elm.milestones}
               value={[
                 elm.timeDifference,
                 elm.plannedEndDate,
                 elm.endDate,
                 elm.progressOfTime,
                 elm.progressOfProject,
-                elm.startDate,
-                elm.milestones
+                elm.startDate
               ]}
+              milestones={elm.milestones}
             ></LinearProgressBar>
           </TopHeaderRight>
         </TopHeader>
@@ -178,13 +184,12 @@ const ProjectDetailPage: React.FC<Props> = props => {
                   elm.endDate,
                   elm.progressOfTime,
                   elm.progressOfProject,
-                  elm.startDate,
-                  elm.milestones
+                  elm.startDate
                 ]}
+                milestones={elm.milestones}
                 goalachiveng={
                   elm.milestones.length > 1 ? elm.goalAchievingProbability : 0
                 }
-                data={elm.milestones}
               ></DragComponent>
             </DetailMilestonesContainer>
           ) : (

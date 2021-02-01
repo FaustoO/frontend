@@ -2,7 +2,10 @@ import { Box, CircularProgress } from "@material-ui/core"
 import React, { Component } from "react"
 import { TopHeaderLeftBıgProgressIcon } from "./ConstantUi"
 import BıgProgressIcon from "../../static/svgicon/bigprogressicon.svg"
-import { Convertpercentage } from "../../functions/cleaningData"
+import {
+  Convertpercentage,
+  PercentageConvertation
+} from "../../functions/cleaningData"
 
 export interface CircleProgressContentProps {
   smallSize?: boolean
@@ -82,7 +85,7 @@ const CircleProgressContent: React.FC<CircleProgressContentProps> = props => {
             >
               {props.progressvalue >= 1
                 ? 100
-                : Convertpercentage(props.progressvalue).converted}
+                : PercentageConvertation(props.progressvalue)}
               <div
                 style={{
                   display: "inline-flex",

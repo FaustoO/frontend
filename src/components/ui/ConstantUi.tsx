@@ -342,6 +342,7 @@ export const DetailContent = styled.div`
 export const DetailContentContainer = styled.div`
   display: flex;
   height: 100%;
+
   width: 100%;
   flex-direction: column;
 `
@@ -368,7 +369,7 @@ export const DetailMilestonesContainer = styled.div`
   display: flex;
   height: 100%;
   width: 100%;
-
+  max-height: 728px;
   flex-direction: column;
   justify-content: space-between;
 `

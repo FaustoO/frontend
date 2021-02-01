@@ -36,12 +36,12 @@ import React, { useState } from "react"
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 
 interface DragComponentProps {
-  data: any
   goalachiveng: number
   value: any
+  milestones: any
 }
 const DragComponent: React.FC<DragComponentProps> = props => {
-  const [characters, updateCharacters] = useState(props.data)
+  const [characters, updateCharacters] = useState(props.milestones)
   // React.useEffect(() => {
   //   console.log(props.data)
   // }, [])
@@ -103,10 +103,7 @@ const DragComponent: React.FC<DragComponentProps> = props => {
                                 Start Date
                               </MilestoneDateContentLabel>
                               <MilestoneDateDataContent>
-                                {
-                                  ConvertDateFormat(startDate)
-                                    .convertedformatdate
-                                }
+                                {ConvertDateFormat(startDate)}
                               </MilestoneDateDataContent>
                             </MilestoneDateContentContanier>
                             <MilestoneDateContentContanier>
@@ -114,7 +111,7 @@ const DragComponent: React.FC<DragComponentProps> = props => {
                                 End Date
                               </MilestoneDateContentLabel>
                               <MilestoneDateDataContent>
-                                {ConvertDateFormat(dueDate).convertedformatdate}
+                                {ConvertDateFormat(dueDate)}
                               </MilestoneDateDataContent>
                             </MilestoneDateContentContanier>
                             <MilestoneDateContentContanier>
@@ -133,6 +130,7 @@ const DragComponent: React.FC<DragComponentProps> = props => {
                             ></CircleProgressContent>
                             <div style={{ display: "flex", width: "50%" }}>
                               <LinearProgressBar
+                                milestones={props.milestones}
                                 value={props.value}
                                 smallSize
                               ></LinearProgressBar>

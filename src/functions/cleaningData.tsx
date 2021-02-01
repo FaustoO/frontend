@@ -1,25 +1,46 @@
 import { differenceInBusinessDays } from "date-fns"
 
-const calculateMilestonesPositioning = (list, fullwidth) => {
-  let firstMilestoneDueDate: any = new Date()
-  let slicedlist = list.slice(0, 16)
+const calculateMilestonesPositioning = (
+  list,
+  startdate,
+  fullwidth,
+  isexpired,
+  fullwidthgray,
+  diffenddatestartdate
+) => {
+  const projectstartdate: any = new Date(startdate)
+  let fullWidth = fullwidth
 
-  return Array.from(slicedlist).map((data: any, index: number) => {
-    const getDate: any = new Date(data.dueDate)
-    const lastelementoflist = list[list.length - 1].dueDate
-    const firstelementstartdate = list[0].startDate
-    const lastelementdueDate: any = new Date(lastelementoflist)
-    console.log(getDate, lastelementdueDate)
-    console.log("FULL WIDTH", fullwidth, Math.abs(lastelementdueDate - getDate))
-    if (getDate == lastelementdueDate) {
-      return fullwidth - 2
+  //expired
+  return Array.from(list).map((data: any, index: number) => {
+    if (isexpired) {
+      const milestoneStartDateDate: any = new Date(data.startDate)
+
+      const diffTimeMilestoneandProjectStartDate =
+        milestoneStartDateDate - projectstartdate
+      const diffMilestoneAndProjectStartDateDays = Math.ceil(
+        diffTimeMilestoneandProjectStartDate / (1000 * 60 * 60 * 24)
+      )
+      const positioning =
+        (diffMilestoneAndProjectStartDateDays / diffenddatestartdate) *
+        fullWidth
+      return positioning
     } else {
-      const diffTime = Math.abs(lastelementdueDate - getDate)
-      const diffDays =
-        fullwidth - 2 - Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-      return diffDays
+      const milestoneStartDateDate: any = new Date(data.startDate)
+
+      const diffTimeMilestoneandProjectStartDate =
+        milestoneStartDateDate - projectstartdate
+      const diffMilestoneAndProjectStartDateDays = Math.ceil(
+        diffTimeMilestoneandProjectStartDate / (1000 * 60 * 60 * 24)
+      )
+      const positioning =
+        (diffMilestoneAndProjectStartDateDays / diffenddatestartdate) *
+        fullWidth
+      return positioning
     }
   })
+
+  //not expired
 }
 export const dateDifference = (date1: Date, date2: Date) => {
   const datefirst: any = new Date(date1)
@@ -31,14 +52,13 @@ export const PercentageConvertation = (value: number) => {
   let num: number = Number(value) // The Number() only visualizes the type and is not needed
   let roundedString: any = num.toFixed(2)
   let rounded: number = Number(roundedString) // toFixed() returns a string (often suitable for printing already)
-  console.log(rounded * 100)
   return rounded * 100
 }
 const ConvertDateFormat = (date: string) => {
-  let splitteddate = date.split("-")
+  let splitteddate = date?.split("-")
   let convertedformatdate =
     splitteddate[1] + "/" + splitteddate[2] + "/" + splitteddate[0]
-  return { convertedformatdate }
+  return convertedformatdate
 }
 export const calculateDatesPositioning = (
   startDate: Date,
@@ -54,16 +74,16 @@ export const calculateDatesPositioning = (
   let diffstartdateplannedenddate = dateDifference(plannedenddate, startdate) //Planned and startdate days difference
   let diffstartdateenddate = dateDifference(enddate, startdate) // end date and start date days difference
   let diffplannedandEnddate = timeDifferenceBetweenPlannedDateAndEndDate //planned end date end date difference which come from backend
-
   let fullWidthGray = 0
   let fullWidth = 0
   let progressprojecttime = 0
   let progressofproject = 0
   let secondlineWidth = 0
   let firstline = 0
+  let isexpired: any = false
   if (diffplannedandEnddate > 0) {
+    isexpired = false
     // if not expired do something
-
     fullWidthGray = 100
     fullWidth = diffstartdateenddate / diffstartdateplannedenddate
     fullWidth = PercentageConvertation(fullWidth)
@@ -78,36 +98,22 @@ export const calculateDatesPositioning = (
     }
 
     diffstartdateplannedenddate = 99
-  } else if (diffplannedandEnddate < 0) {
+  } else if (diffplannedandEnddate <= 0) {
     //if date expired do something
-
+    isexpired = true
     fullWidth = 100
-    console.log("chjeckkkkkkkk", progressOfTime)
     firstline = (100 * PercentageConvertation(progressOfTime)) / fullWidth
     secondlineWidth = fullWidth - Math.round(firstline)
-    if (progressOfProject > 1) {
-      progressofproject = (100 * PercentageConvertation(0.99)) / fullWidth
+
+    progressofproject = PercentageConvertation(progressOfProject)
+    if (progressofproject > 100) {
+      progressofproject = 100
     } else {
-      progressofproject =
-        (100 * PercentageConvertation(progressOfProject)) / fullWidth
     }
     diffstartdateplannedenddate =
-      fullWidth + timeDifferenceBetweenPlannedDateAndEndDate - 1
+      (diffstartdateplannedenddate / diffstartdateenddate) * 100
     fullWidthGray = diffstartdateplannedenddate
   }
-  console.log(
-    "lookhere",
-    progressprojecttime,
-    secondlineWidth,
-    progressofproject,
-    fullWidth,
-    timeDifferenceBetweenPlannedDateAndEndDate,
-    firstline,
-    diffstartdateplannedenddate,
-    progressOfTime,
-    progressOfProject,
-    0.7749999999999999 + 0.625 + 0.8 + 0.15
-  )
 
   return {
     diffstartdateplannedenddate,
@@ -118,7 +124,8 @@ export const calculateDatesPositioning = (
     progressofproject,
     progressprojecttime,
     secondlineWidth,
-    firstline
+    firstline,
+    isexpired
   }
 }
 

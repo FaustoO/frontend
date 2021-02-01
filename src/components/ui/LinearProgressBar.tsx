@@ -19,6 +19,7 @@ import { Tooltip } from "@material-ui/core"
 export interface LinearProgressBarProps {
   smallSize?: boolean
   value?: any[] | any
+  milestones: []
 }
 const MainContainerBody = styled.div<{ small?: boolean }>`
   display: flex;
@@ -92,11 +93,13 @@ const SecondLine = styled.div<{ width: any }>`
 const SmallPointerIcon = styled.img<{ position?: number }>`
   position: absolute;
   cursor: pointer;
+  z-index: 999;
   left: ${p => p.position + "%"};
 `
 const BigPointerIcon = styled.img<{ position?: number; small?: boolean }>`
   position: absolute;
   cursor: pointer;
+  z-index: 0px;
   left: ${p => p.position + "%"};
   ${p => p.small && "width:11px;height:11px;"}
 `
@@ -119,12 +122,51 @@ const LinearProgressBar: React.FC<LinearProgressBarProps> = props => {
   //   //   LinearProgressBarCleaningData(props.value[0]).percentageTimeDifference
   //   // )
   // })
-  React.useEffect(() => {
-    console.log(
-      "Complete Check",
-      calculateMilestonesPositioning(
-        props.value[6],
-        calculateDatesPositioning(
+  const getLocationOnProgressBar = (expression: string) => {
+    switch (expression) {
+      case "progressofproject":
+        // code block
+        return calculateDatesPositioning(
+          props.value[5],
+          props.value[2],
+          props.value[1],
+          props.value[0],
+          props.value[4],
+          props.value[3]
+        ).progressofproject
+
+      case "enddate":
+        // code block
+        return (
+          calculateDatesPositioning(
+            props.value[5],
+            props.value[2],
+            props.value[1],
+            props.value[0],
+            props.value[4],
+            props.value[3]
+          ).fullWidth - 1
+        )
+      case "GrayLine":
+        return calculateDatesPositioning(
+          props.value[5],
+          props.value[2],
+          props.value[1],
+          props.value[0],
+          props.value[4],
+          props.value[3]
+        ).firstline
+      case "YellowLine":
+        return calculateDatesPositioning(
+          props.value[5],
+          props.value[2],
+          props.value[1],
+          props.value[0],
+          props.value[4],
+          props.value[3]
+        ).secondlineWidth
+      case "FullWidth":
+        return calculateDatesPositioning(
           props.value[5],
           props.value[2],
           props.value[1],
@@ -132,20 +174,53 @@ const LinearProgressBar: React.FC<LinearProgressBarProps> = props => {
           props.value[4],
           props.value[3]
         ).fullWidth
-      )
-    )
-  }, [])
-
+      case "Isexpired":
+        return calculateDatesPositioning(
+          props.value[5],
+          props.value[2],
+          props.value[1],
+          props.value[0],
+          props.value[4],
+          props.value[3]
+        ).isexpired
+      case "widthofGray":
+        return calculateDatesPositioning(
+          props.value[5],
+          props.value[2],
+          props.value[1],
+          props.value[0],
+          props.value[4],
+          props.value[3]
+        ).fullWidthGray
+      case "enddate-startdate":
+        return calculateDatesPositioning(
+          props.value[5],
+          props.value[2],
+          props.value[1],
+          props.value[0],
+          props.value[4],
+          props.value[3]
+        ).diffstartdateenddate
+      case "plannedenddate-startdate":
+        return calculateDatesPositioning(
+          props.value[5],
+          props.value[2],
+          props.value[1],
+          props.value[0],
+          props.value[4],
+          props.value[3]
+        ).diffstartdateplannedenddate
+      default:
+        return 0
+      // code block
+    }
+  }
   return (
     <TopHeaderStatusBarContainer>
       <MainContainerTop small={props.smallSize}>
         {!props.smallSize && (
           <>
-            <Tooltip
-              title={`Start Date ${
-                ConvertDateFormat(props.value[5]).convertedformatdate
-              }`}
-            >
+            <Tooltip title={`Start Date ${ConvertDateFormat(props.value[5])}`}>
               <SmallPointerIcon
                 id="startdate"
                 position={-1}
@@ -156,17 +231,8 @@ const LinearProgressBar: React.FC<LinearProgressBarProps> = props => {
         )}
         <Tooltip
           title={`Project Progress %${
-            props.value[6].length > 1
-              ? Math.round(
-                  calculateDatesPositioning(
-                    props.value[5],
-                    props.value[2],
-                    props.value[1],
-                    props.value[0],
-                    props.value[4],
-                    props.value[3]
-                  ).progressofproject
-                )
+            props.milestones.length > 1
+              ? Math.round(getLocationOnProgressBar("progressofproject"))
               : 0
           }`}
         >
@@ -174,15 +240,8 @@ const LinearProgressBar: React.FC<LinearProgressBarProps> = props => {
             small={props.smallSize}
             id="progressofproject"
             position={
-              props.value[6].length > 1
-                ? calculateDatesPositioning(
-                    props.value[5],
-                    props.value[2],
-                    props.value[1],
-                    props.value[0],
-                    props.value[4],
-                    props.value[3]
-                  ).progressofproject - 2
+              props.milestones.length > 1
+                ? getLocationOnProgressBar("progressofproject") - 2
                 : 2
             }
             src={BigPointer}
@@ -190,46 +249,24 @@ const LinearProgressBar: React.FC<LinearProgressBarProps> = props => {
         </Tooltip>
         {!props.smallSize && (
           <>
-            {props.value[6].length > 1 && (
-              <Tooltip
-                title={`End Date ${
-                  ConvertDateFormat(props.value[2]).convertedformatdate
-                }`}
-              >
+            {props.milestones.length > 1 && (
+              <Tooltip title={`End Date ${ConvertDateFormat(props.value[2])}`}>
                 <SmallPointerIcon
                   src={SmallPointer}
-                  position={
-                    calculateDatesPositioning(
-                      props.value[5],
-                      props.value[2],
-                      props.value[1],
-                      props.value[0],
-                      props.value[4],
-                      props.value[3]
-                    ).fullWidth - 1
-                  }
+                  position={getLocationOnProgressBar("enddate")}
                   id="enddate"
                 ></SmallPointerIcon>
               </Tooltip>
             )}
             {
               <Tooltip
-                title={`Planned End Date ${
-                  ConvertDateFormat(props.value[1]).convertedformatdate
-                }`}
+                title={`Planned End Date ${ConvertDateFormat(props.value[1])}`}
               >
                 <PlannedAndDatePointer
                   src={SmallPointer}
                   position={
-                    props.value[6].length > 1
-                      ? calculateDatesPositioning(
-                          props.value[5],
-                          props.value[2],
-                          props.value[1],
-                          props.value[0],
-                          props.value[4],
-                          props.value[3]
-                        ).diffstartdateplannedenddate
+                    props.milestones.length > 1
+                      ? getLocationOnProgressBar("plannedenddate-startdate")
                       : 100
                   }
                   id="plannedenddate"
@@ -245,76 +282,26 @@ const LinearProgressBar: React.FC<LinearProgressBarProps> = props => {
             <>
               <MainContainerGrayArea
                 width={
-                  props.value[6].length > 1
-                    ? calculateDatesPositioning(
-                        props.value[5],
-                        props.value[2],
-                        props.value[1],
-                        props.value[0],
-                        props.value[4],
-                        props.value[3]
-                      ).fullWidthGray
+                  props.milestones.length > 1
+                    ? getLocationOnProgressBar("widthofGray")
                     : 100
                 }
               >
                 {" "}
                 <Tooltip
-                  title={`${Math.round(
-                    calculateDatesPositioning(
-                      props.value[5],
-                      props.value[2],
-                      props.value[1],
-                      props.value[0],
-                      props.value[4],
-                      props.value[3]
-                    ).firstline
-                  )}%`}
+                  title={`${Math.round(getLocationOnProgressBar("GrayLine"))}%`}
                 >
                   <FirstLine
                     width={
-                      calculateDatesPositioning(
-                        props.value[5],
-                        props.value[2],
-                        props.value[1],
-                        props.value[0],
-                        props.value[4],
-                        props.value[3]
-                      ).firstline > 100
+                      getLocationOnProgressBar("GrayLine") > 100
                         ? 100
-                        : calculateDatesPositioning(
-                            props.value[5],
-                            props.value[2],
-                            props.value[1],
-                            props.value[0],
-                            props.value[4],
-                            props.value[3]
-                          ).firstline
+                        : getLocationOnProgressBar("GrayLine")
                     }
                   ></FirstLine>
                 </Tooltip>
-                <Tooltip
-                  title={`${
-                    calculateDatesPositioning(
-                      props.value[5],
-                      props.value[2],
-                      props.value[1],
-                      props.value[0],
-                      props.value[4],
-                      props.value[3]
-                    ).secondlineWidth
-                  }%`}
-                >
+                <Tooltip title={`${getLocationOnProgressBar("YellowLine")}%`}>
                   <SecondLine
-                    width={Math.round(
-                      calculateDatesPositioning(
-                        props.value[5],
-                        props.value[2],
-                        props.value[1],
-                        props.value[0],
-                        props.value[4],
-                        props.value[3]
-                      ).secondlineWidth
-                    )}
+                    width={Math.round(getLocationOnProgressBar("YellowLine"))}
                   ></SecondLine>
                 </Tooltip>
               </MainContainerGrayArea>
@@ -326,20 +313,17 @@ const LinearProgressBar: React.FC<LinearProgressBarProps> = props => {
         <>
           <MainContainerBottom>
             {calculateMilestonesPositioning(
-              props.value[6],
-              calculateDatesPositioning(
-                props.value[5],
-                props.value[2],
-                props.value[1],
-                props.value[0],
-                props.value[4],
-                props.value[3]
-              ).fullWidth
+              props.milestones,
+              props.value[5],
+              getLocationOnProgressBar("FullWidth"),
+              getLocationOnProgressBar("Isexpired"),
+              getLocationOnProgressBar("widthofGray"),
+              getLocationOnProgressBar("enddate-startdate")
             ).map((elm, index) => {
               return (
                 <Tooltip title={`Milestone ${index + 1}`}>
                   <MilestonesIcon
-                    position={elm && props.value[6].length > 1 ? elm : 7}
+                    position={elm && props.milestones.length > 1 ? elm : 0}
                     src={MilestonePointer}
                   ></MilestonesIcon>
                 </Tooltip>
