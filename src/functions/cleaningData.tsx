@@ -84,12 +84,14 @@ export const calculateDatesPositioning = (
   if (diffplannedandEnddate > 0) {
     isexpired = false
     // if not expired do something
+
     fullWidthGray = 100
     fullWidth = diffstartdateenddate / diffstartdateplannedenddate
-    fullWidth = PercentageConvertation(fullWidth)
-    firstline = (100 * PercentageConvertation(progressOfTime)) / fullWidth
-    secondlineWidth = fullWidth - Math.round(firstline)
 
+    fullWidth = PercentageConvertation(fullWidth)
+    firstline = progressOfTime * fullWidth
+    secondlineWidth = fullWidth - firstline
+    console.log(firstline, secondlineWidth)
     if (progressOfProject > 1) {
       progressofproject = 100
     } else {
@@ -102,8 +104,8 @@ export const calculateDatesPositioning = (
     //if date expired do something
     isexpired = true
     fullWidth = 100
-    firstline = (100 * PercentageConvertation(progressOfTime)) / fullWidth
-    secondlineWidth = fullWidth - Math.round(firstline)
+    firstline = PercentageConvertation(progressOfTime)
+    secondlineWidth = fullWidth - firstline
 
     progressofproject = PercentageConvertation(progressOfProject)
     if (progressofproject > 100) {
