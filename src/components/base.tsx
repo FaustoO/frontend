@@ -40,7 +40,7 @@ const BaseApp: React.FC<BaseProps> = () => {
         <NavbarComponent></NavbarComponent>
         <BodyComponent>
           <Switch>
-            <Route exact path="/" component={OverviewProject} />
+            <Route exact path="/frontend" component={OverviewProject} />
             <Route path="/frontend/project/all" component={OverviewProject} />
             <Route
               path="/frontend/project/detail/:id"

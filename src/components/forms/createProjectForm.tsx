@@ -44,7 +44,7 @@ const CreateProjectRadioInputForms: React.FC<CreateProjectRadioInputFormsProps> 
 
     today = mm + "-" + dd + "-" + yyyy
     axios
-      .post("/frontend/project/all/", {
+      .post("project/all/", {
         user: name,
         typeofproject: newvalue,
         goal: goalname,
@@ -52,7 +52,7 @@ const CreateProjectRadioInputForms: React.FC<CreateProjectRadioInputFormsProps> 
         plannedEndDate: null
       })
       .then(res => {
-        history.push(`/frontend/project/detail/${res.data.id}`)
+        history.push(`project/detail/${res.data.id}`)
       })
       .catch(err => prompt(err))
   }
