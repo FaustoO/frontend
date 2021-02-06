@@ -59,7 +59,7 @@ const Navbar: React.FC<NavbarProps> = props => {
               <CreateNewProjectButtonContainer
                 ref={CreateNewProjectButtonRef}
                 onClick={() => {
-                  history.push("/frontend/project/all")
+                  history.push("/project/all")
                 }}
               >
                 Projects

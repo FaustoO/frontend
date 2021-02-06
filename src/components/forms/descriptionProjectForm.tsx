@@ -13,12 +13,12 @@ import AcceptIcon from "../../static/svgicon/accept.svg"
 import { stringify } from "querystring"
 
 export interface DescriptionBoxTextAreaProps {
-  id: string
-  user: string
-  typeofproject: string
-  defaultValue: null | string
-  firstTimeChange: boolean
-  callbackFunction: any
+  id?: string
+  user?: string
+  typeofproject?: string
+  defaultValue?: null | string
+  firstTimeChange?: boolean
+  callbackFunction?: any
 }
 
 const DescriptionInput = styled.textarea`

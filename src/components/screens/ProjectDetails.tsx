@@ -37,7 +37,6 @@ import {
   TopHeaderTitleBox,
   UserLogoImage,
   UserNameContainer,
-  DetailMilestonesContainer,
   MilestonesHeader,
   MilestoneHeaderText,
   MilestoneHeaderHintText,
@@ -59,12 +58,17 @@ import {
   MilestoneGoalStaticsContainer,
   ClockIconImage,
   MilestoneStatusBarContentItems,
-  MilestoneSearchTabIcon
+  MilestoneSearchTabIcon,
+  DetailMilestonesRoot,
+  DetailMilestoneContainer,
+  Detail2
 } from "../ui/ConstantUi"
 import CircleProgressContent from "../ui/CircleProgressContent"
 import { ConvertDateFormat } from "../../functions/cleaningData"
 import LinearProgressBar from "../ui/LinearProgressBar"
 import DragComponent from "../ui/Draggable"
+import MilestoneEditComponent from "../ui/MilestoneEdit"
+import { AnySoaRecord } from "dns"
 
 export interface ProjectDetailPageProps {
   id: any
@@ -74,6 +78,10 @@ type Props = RouteComponentProps & ProjectDetailPageProps
 const ProjectDetailPage: React.FC<Props> = props => {
   const [data, setData] = React.useState<any[] | null>()
   const [milestonesTab, setMilestonesTab] = React.useState<boolean>(false)
+  const [milestoneEditTab, setMilestoneEditTab] = React.useState<boolean>(false)
+  const [activeMilestoneData, setActiveMilestoneData] = React.useState<any[]>(
+    []
+  )
   const getdata = async () => {
     const state = props.match.params
     const id = (state as any)?.id
@@ -84,9 +92,17 @@ const ProjectDetailPage: React.FC<Props> = props => {
       })
       .catch(err => prompt(err))
   }
+
+  const OpenEditMilestoneTab = () => {
+    console.log("that runned")
+    setMilestoneEditTab(true)
+  }
+  const getMilestoneDataInfo = (activeMilestione: any[]) => {
+    setActiveMilestoneData(activeMilestione)
+  }
   const ProjectDetailContent: any = React.useCallback(() => {
     return data?.map((elm, index) => (
-      <ProjectDetailsContainer key={index}>
+      <ProjectDetailsContainer ismilestoneedit={milestoneEditTab} key={index}>
         <LeftAside>
           <LeftAsideContentBox>
             {" "}
@@ -113,6 +129,7 @@ const ProjectDetailPage: React.FC<Props> = props => {
             <TopHeaderTitleBox>
               <ProjectNameInputContainer style={{ marginTop: "5px" }}>
                 <EditForm
+                  ismilestoneedit={false}
                   callbackFunction={getdata}
                   isnamechanged={elm.isnamechanged}
                   user={elm.user}
@@ -149,6 +166,7 @@ const ProjectDetailPage: React.FC<Props> = props => {
               color={!milestonesTab ? "rgb(228, 220, 0)" : "rgb(240, 240, 255)"}
               onClick={() => {
                 setMilestonesTab(false)
+                setMilestoneEditTab(false)
               }}
               src={SearchButtonSvg}
             ></MilestoneSearchTabIcon>
@@ -161,37 +179,44 @@ const ProjectDetailPage: React.FC<Props> = props => {
             ></MilestoneTabIcon>
           </ControlPanelItemsContainer>
         </ControlPanel>
-        <DetailContent>
+        <DetailContent id="DetailsRoot">
           {milestonesTab ? (
-            <DetailMilestonesContainer>
-              <MilestonesHeader>
-                <MilestoneHeaderText>Milestones</MilestoneHeaderText>
-                <MilestoneHeaderHintText>
-                  In this section you can manage the milestones of your project
-                </MilestoneHeaderHintText>
-              </MilestonesHeader>
-              <MilestoneAddButtonContainer>
-                <MilestoneAddButtonIcon
-                  onClick={() => addMilestoneFunction(elm.id)}
-                  src={AddIcon}
-                ></MilestoneAddButtonIcon>
-              </MilestoneAddButtonContainer>
+            <DetailMilestonesRoot id="MilestoneRoot">
+              <DetailMilestoneContainer width={100}>
+                <MilestonesHeader>
+                  <MilestoneHeaderText>Milestones</MilestoneHeaderText>
+                  <MilestoneHeaderHintText>
+                    In this section you can manage the milestones of your
+                    project
+                  </MilestoneHeaderHintText>
+                </MilestonesHeader>
+                <MilestoneAddButtonContainer>
+                  <MilestoneAddButtonIcon
+                    onClick={() => addMilestoneFunction(elm.id)}
+                    src={AddIcon}
+                  ></MilestoneAddButtonIcon>
+                </MilestoneAddButtonContainer>
 
-              <DragComponent
-                value={[
-                  elm.timeDifference,
-                  elm.plannedEndDate,
-                  elm.endDate,
-                  elm.progressOfTime,
-                  elm.progressOfProject,
-                  elm.startDate
-                ]}
-                milestones={elm.milestones}
-                goalachiveng={
-                  elm.milestones.length > 1 ? elm.goalAchievingProbability : 0
-                }
-              ></DragComponent>
-            </DetailMilestonesContainer>
+                <DragComponent
+                  editTab={OpenEditMilestoneTab}
+                  isEditTabOpened={milestoneEditTab}
+                  getMilestoneData={getMilestoneDataInfo}
+                  value={[
+                    elm.timeDifference,
+                    elm.plannedEndDate,
+                    elm.endDate,
+                    elm.progressOfTime,
+                    elm.progressOfProject,
+                    elm.startDate,
+                    elm.goal
+                  ]}
+                  milestones={elm.milestones}
+                  goalachiveng={
+                    elm.milestones.length > 1 ? elm.goalAchievingProbability : 0
+                  }
+                ></DragComponent>
+              </DetailMilestoneContainer>
+            </DetailMilestonesRoot>
           ) : (
             <DetailContentContainer key={index}>
               {" "}
@@ -226,9 +251,31 @@ const ProjectDetailPage: React.FC<Props> = props => {
             </DetailContentContainer>
           )}
         </DetailContent>
+        {milestoneEditTab && (
+          <Detail2>
+            <DetailContentContainer>
+              <MilestoneEditComponent
+                projectdata={[
+                  elm.timeDifference,
+                  elm.plannedEndDate,
+                  elm.endDate,
+                  elm.progressOfTime,
+                  elm.progressOfProject,
+                  elm.startDate
+                ]}
+                goalachivevalue={
+                  elm.milestones.length > 1 ? elm.goalAchievingProbability : 0
+                }
+                data={activeMilestoneData}
+                callbackFunction={getdata}
+                isOpened={milestoneEditTab}
+              ></MilestoneEditComponent>
+            </DetailContentContainer>
+          </Detail2>
+        )}
       </ProjectDetailsContainer>
     ))
-  }, [data, milestonesTab])
+  }, [data, milestoneEditTab, milestonesTab, activeMilestoneData])
   React.useEffect(() => {
     getdata()
   }, [props.match.params])

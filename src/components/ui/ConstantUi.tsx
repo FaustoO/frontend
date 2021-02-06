@@ -179,16 +179,29 @@ export const DropDownMenuBody = styled.div`
   height: 100%;
 `
 // Project Details
-export const ProjectDetailsContainer = styled.div`
+export const ProjectDetailsContainer = styled.div<{ ismilestoneedit: boolean }>`
   display: inline-grid;
   width: 100%;
-  grid-template-columns: 0.3fr 0.2fr 2.5fr 1fr;
+  grid-template-columns: ${p =>
+    p.ismilestoneedit ? "0.3fr 0.2fr 2.5fr 2.5fr" : "0.3fr 0.2fr 2.5fr 1fr"};
   grid-template-rows: 0.8fr 1.2fr 1fr;
   gap: 4px 5px;
-  grid-template-areas:
-    "LeftAside TopHeader TopHeader TopHeader"
-    "LeftAside controlpanel Detail-Content Detail-Content"
-    "LeftAside controlpanel Detail-Content Detail-Content";
+  grid-template-areas: ${p =>
+    p.ismilestoneedit
+      ? `${'"LeftAside TopHeader TopHeader TopHeader"\n"LeftAside controlpanel Detail-Content  Detail-Content-2"\n"LeftAside controlpanel Detail-Content Detail-Content-2"'}`
+      : `${'"LeftAside TopHeader TopHeader TopHeader"\n"LeftAside controlpanel Detail-Content Detail-Content"\n"LeftAside controlpanel Detail-Content Detail-Content"'}`};
+`
+export const Detail2 = styled.div`
+  grid-area: Detail-Content-2;
+  border-radius: 5px;
+  padding: 45px 95px 55px 35px;
+  background: rgba(50, 50, 77, 1);
+`
+export const Detail2ContentContainer = styled.div`
+  display: flex;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
 `
 export const LeftAside = styled.div`
   grid-area: LeftAside;
@@ -259,8 +272,16 @@ export const TopHeader = styled.div`
 export const TopHeaderLeft = styled.div`
   display: flex;
 `
-export const TopHeaderLeftBıgProgressIcon = styled.img<{ small?: boolean }>`
-  ${p => (p.small ? "height:48px;width:48px;" : "height:auto;width:auto;")}
+export const TopHeaderLeftBıgProgressIcon = styled.img<{
+  small?: boolean
+  medium?: boolean
+}>`
+  ${p =>
+    p.small
+      ? p.medium
+        ? "height:70px;width:70px;"
+        : "height:48px;width:48px;"
+      : "height:auto;width:auto;"}
 `
 export const TopHeaderRight = styled.div`
   width: 80%;
@@ -365,11 +386,18 @@ export const SaveIcon = styled.img`
 export const DiscardIcon = styled.img`
   cursor: pointer;
 `
-export const DetailMilestonesContainer = styled.div`
+export const DetailMilestonesRoot = styled.div`
   display: flex;
   height: 100%;
   width: 100%;
   max-height: 728px;
+  flex-direction: row;
+  justify-content: space-between;
+`
+export const DetailMilestoneContainer = styled.div<{ width: number }>`
+  display: flex;
+  width: ${p => p.width}%;
+  height: 100%;
   flex-direction: column;
   justify-content: space-between;
 `
@@ -493,7 +521,9 @@ export const MilestoneGoalContent = styled.div`
   text-align: left;
   color: rgba(240, 240, 255, 0.7);
 `
-export const MilestonesDateContentRoot = styled.div`
+export const MilestonesDateContentRoot = styled.div<{
+  isEditTapOpened: boolean
+}>`
   display: flex;
   flex-grow: 0;
   flex-basis: 30%;
@@ -501,7 +531,8 @@ export const MilestonesDateContentRoot = styled.div`
   max-height: 50px;
   justify-content: space-evenly;
   flex-direction: row;
-  border-right: 4px solid rgba(240, 240, 255, 0.5);
+  border-right: ${p =>
+    p.isEditTapOpened ? "" : "4px solid rgba(240, 240, 255, 0.5);"}
   border-radius: 1px;
 `
 export const MilestoneDateContentContanier = styled.div`

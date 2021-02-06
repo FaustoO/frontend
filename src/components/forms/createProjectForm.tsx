@@ -52,7 +52,7 @@ const CreateProjectRadioInputForms: React.FC<CreateProjectRadioInputFormsProps> 
         plannedEndDate: null
       })
       .then(res => {
-        history.push(`project/detail/${res.data.id}`)
+        history.push(`/project/detail/${res.data.id}`)
       })
       .catch(err => prompt(err))
   }

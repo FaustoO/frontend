@@ -18,16 +18,19 @@ import { Tooltip } from "@material-ui/core"
 
 export interface LinearProgressBarProps {
   smallSize?: boolean
+  mediumSize?: boolean
   value?: any[] | any
-  milestones: []
+  milestones?: []
 }
-const MainContainerBody = styled.div<{ small?: boolean }>`
+const MainContainerBody = styled.div<{ small?: boolean; medium?: boolean }>`
   display: flex;
 
   flex-direction: row;
   ${p =>
     p.small
-      ? "flex-basis: 20%; min-width: 20%;max-height: 12px;min-height: 12px;"
+      ? p.medium
+        ? "flex-basis: 100%; min-width: 100%;max-height: 13.18px;min-height: 13.18px;"
+        : "flex-basis: 20%; min-width: 20%;max-height: 12px;min-height: 12px;"
       : "flex-basis: 100%; min-width: 100%;max-height: 23px;min-height: 23px;"}
 
   flex-grow: 0;
@@ -37,10 +40,11 @@ const MainContainerGrayArea = styled.div<{ width: number }>`
   background: ${p =>
     `linear-gradient(to right, #636380 0%, #636380 ${p.width}%, transparent ${p.width}%, transparent 100%)`};
   display: flex;
+  border-radius: 5px;
   width: 100%;
   padding: 4.19px 7px 4.27px 7px;
 `
-const MainContainerTop = styled.div<{ small?: boolean }>`
+const MainContainerTop = styled.div<{ small?: boolean; medium?: boolean }>`
   display: flex;
   align-items: flex-end;
   flex-direction: row;
@@ -236,7 +240,7 @@ const LinearProgressBar: React.FC<LinearProgressBarProps> = props => {
         )}
         <Tooltip
           title={`Project Progress %${
-            getLocationOnProgressBar("progressofproject") > 100
+            getLocationOnProgressBar("progressofproject") >= 100
               ? 100
               : Math.round(getLocationOnProgressBar("progressofproject"))
           }`}
@@ -245,8 +249,8 @@ const LinearProgressBar: React.FC<LinearProgressBarProps> = props => {
             small={props.smallSize}
             id="progressofproject"
             position={
-              getLocationOnProgressBar("progressofproject") > 100
-                ? 97
+              getLocationOnProgressBar("progressofproject") >= 100
+                ? 97.5
                 : getLocationOnProgressBar("progressofproject")
             }
             src={BigPointer}
@@ -283,7 +287,7 @@ const LinearProgressBar: React.FC<LinearProgressBarProps> = props => {
         )}
       </MainContainerTop>
       <Tooltip title="100%">
-        <MainContainerBody small={props.smallSize}>
+        <MainContainerBody medium={props.mediumSize} small={props.smallSize}>
           {
             <>
               <MainContainerGrayArea

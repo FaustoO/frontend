@@ -29,7 +29,10 @@ import {
   MilestoneStatusBarContentItems
 } from "../ui/ConstantUi"
 import CircleProgressContent from "../ui/CircleProgressContent"
-import { ConvertDateFormat } from "../../functions/cleaningData"
+import {
+  ConvertDateFormat,
+  PercentageConvertation
+} from "../../functions/cleaningData"
 import LinearProgressBar from "../ui/LinearProgressBar"
 
 import React, { useState } from "react"
@@ -39,12 +42,16 @@ interface DragComponentProps {
   goalachiveng: number
   value: any
   milestones: any
+  editTab: () => void
+  getMilestoneData: (activeMilestione: any[]) => void
+  isEditTabOpened: boolean
 }
 const DragComponent: React.FC<DragComponentProps> = props => {
   const [characters, updateCharacters] = useState(props.milestones)
   // React.useEffect(() => {
   //   console.log(props.data)
   // }, [])
+
   function handleOnDragEnd(result: any) {
     if (!result.destination) return
     const items = Array.from(characters)
@@ -71,7 +78,8 @@ const DragComponent: React.FC<DragComponentProps> = props => {
                   relativeProgress,
                   startDate,
                   dueDate,
-                  is_main_project
+                  is_main_project,
+                  goal
                 },
                 index: number
               ) => {
@@ -80,6 +88,23 @@ const DragComponent: React.FC<DragComponentProps> = props => {
                     {provided => (
                       <>
                         <MilestonesWrapper
+                          onClick={() => {
+                            console.log("you clicked")
+                            props.editTab()
+                            props.getMilestoneData([
+                              {
+                                id,
+                                goal,
+                                duration,
+                                startDate: ConvertDateFormat(startDate),
+                                dueDate: ConvertDateFormat(dueDate),
+                                progress: PercentageConvertation(progress),
+                                relativeProgress: PercentageConvertation(
+                                  relativeProgress
+                                )
+                              }
+                            ])
+                          }}
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
@@ -93,11 +118,13 @@ const DragComponent: React.FC<DragComponentProps> = props => {
                               {" "}
                               <MilestoneGoalStatic>Goal</MilestoneGoalStatic>
                               <MilestoneGoalContent>
-                                Type in the goal of the milestone here
+                                {goal}
                               </MilestoneGoalContent>
                             </MilestoneGoalStaticsContainer>
                           </MilestoneLeftSide>
-                          <MilestonesDateContentRoot>
+                          <MilestonesDateContentRoot
+                            isEditTapOpened={props.isEditTabOpened}
+                          >
                             <MilestoneDateContentContanier>
                               <MilestoneDateContentLabel>
                                 Start Date
@@ -114,33 +141,39 @@ const DragComponent: React.FC<DragComponentProps> = props => {
                                 {ConvertDateFormat(dueDate)}
                               </MilestoneDateDataContent>
                             </MilestoneDateContentContanier>
-                            <MilestoneDateContentContanier>
-                              <MilestoneDateContentLabel>
-                                Duration
-                              </MilestoneDateContentLabel>
-                              <MilestoneDateDataContent>
-                                {duration}
-                              </MilestoneDateDataContent>
-                            </MilestoneDateContentContanier>
+                            {!props.isEditTabOpened && (
+                              <MilestoneDateContentContanier>
+                                <MilestoneDateContentLabel>
+                                  Duration
+                                </MilestoneDateContentLabel>
+                                <MilestoneDateDataContent>
+                                  {duration}
+                                </MilestoneDateDataContent>
+                              </MilestoneDateContentContanier>
+                            )}
                           </MilestonesDateContentRoot>
-                          <MilestoneStatusBarsContentContainer>
-                            <CircleProgressContent
-                              progressvalue={props.goalachiveng}
-                              smallSize
-                            ></CircleProgressContent>
-                            <div style={{ display: "flex", width: "50%" }}>
-                              <LinearProgressBar
-                                milestones={props.milestones}
-                                value={props.value}
-                                smallSize
-                              ></LinearProgressBar>
-                            </div>
-                          </MilestoneStatusBarsContentContainer>
-                          <MilestoneEndThreeDotContainer>
-                            <MilestoneEndThreeDotImage
-                              src={threeDotImage}
-                            ></MilestoneEndThreeDotImage>
-                          </MilestoneEndThreeDotContainer>
+                          {!props.isEditTabOpened && (
+                            <>
+                              <MilestoneStatusBarsContentContainer>
+                                <CircleProgressContent
+                                  progressvalue={props.goalachiveng}
+                                  smallSize
+                                ></CircleProgressContent>
+                                <div style={{ display: "flex", width: "50%" }}>
+                                  <LinearProgressBar
+                                    milestones={props.milestones}
+                                    value={props.value}
+                                    smallSize
+                                  ></LinearProgressBar>
+                                </div>
+                              </MilestoneStatusBarsContentContainer>
+                              <MilestoneEndThreeDotContainer>
+                                <MilestoneEndThreeDotImage
+                                  src={threeDotImage}
+                                ></MilestoneEndThreeDotImage>
+                              </MilestoneEndThreeDotContainer>
+                            </>
+                          )}
                         </MilestonesWrapper>
                       </>
                     )}

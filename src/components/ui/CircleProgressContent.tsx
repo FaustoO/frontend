@@ -10,21 +10,24 @@ import {
 export interface CircleProgressContentProps {
   smallSize?: boolean
   progressvalue?: number | any
+  mediumSize?: boolean
 }
 
 const CircleProgressContent: React.FC<CircleProgressContentProps> = props => {
   return (
-    <Box
-      position="relative"
-      display="inline-flex"
-      visibility={
-        !props.smallSize && props.progressvalue === 0 ? "hidden" : "visible"
-      }
-    >
+    <Box position="relative" display="inline-flex" visibility={"visible"}>
       <CircularProgress
         style={{
-          height: props.smallSize ? "48px" : "188px",
-          width: props.smallSize ? "48px" : "188px",
+          height: props.smallSize
+            ? props.mediumSize
+              ? "70px"
+              : "48px"
+            : "188px",
+          width: props.smallSize
+            ? props.mediumSize
+              ? "70px"
+              : "48px"
+            : "188px",
           color: "yellow",
           zIndex: 999
         }}
@@ -38,8 +41,16 @@ const CircleProgressContent: React.FC<CircleProgressContentProps> = props => {
       />
       <Box
         style={{
-          height: props.smallSize ? "48px" : "188px",
-          width: props.smallSize ? "48px" : "188px"
+          height: props.smallSize
+            ? props.mediumSize
+              ? "70px"
+              : "48px"
+            : "188px",
+          width: props.smallSize
+            ? props.mediumSize
+              ? "70px"
+              : "48px"
+            : "188px"
         }}
         top={0}
         left={props.smallSize ? -1.5 : 0}
@@ -52,6 +63,7 @@ const CircleProgressContent: React.FC<CircleProgressContentProps> = props => {
       >
         <TopHeaderLeftBıgProgressIcon
           small={props.smallSize}
+          medium={props.mediumSize}
           src={BıgProgressIcon}
         ></TopHeaderLeftBıgProgressIcon>
         <div
@@ -64,8 +76,9 @@ const CircleProgressContent: React.FC<CircleProgressContentProps> = props => {
             minWidth: "80%",
             justifyContent: "center",
             alignItems: "center",
-            backgroundColor: props.smallSize ? "#373752" : "#32324D",
-            borderRadius: props.smallSize ? "80%" : "50%",
+            backgroundColor:
+              props.smallSize || props.mediumSize ? "#373752" : "#32324D",
+            borderRadius: props.smallSize || props.mediumSize ? "80%" : "50%",
             display: "inline-flex",
             color: "rgba(240, 240, 255, 1)"
           }}
@@ -75,7 +88,7 @@ const CircleProgressContent: React.FC<CircleProgressContentProps> = props => {
               style={{
                 display: "flex",
                 fontFamily: "aileron",
-                fontSize: "72px",
+                fontSize: props.progressvalue > 1 ? "50px" : "72px",
                 fontStyle: "normal",
                 fontWeight: 400,
                 lineHeight: "86px",
@@ -83,8 +96,10 @@ const CircleProgressContent: React.FC<CircleProgressContentProps> = props => {
                 textAlign: "left"
               }}
             >
-              {props.progressvalue >= 1
-                ? 100
+              {props.progressvalue > 1
+                ? ">100"
+                : PercentageConvertation(props.progressvalue) == 0
+                ? " "
                 : PercentageConvertation(props.progressvalue)}
               <div
                 style={{
@@ -99,7 +114,7 @@ const CircleProgressContent: React.FC<CircleProgressContentProps> = props => {
                   alignItems: "center"
                 }}
               >
-                %
+                {PercentageConvertation(props.progressvalue) == 0 ? " " : "%"}
               </div>
             </div>
           )}

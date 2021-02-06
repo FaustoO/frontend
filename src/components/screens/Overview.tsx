@@ -57,7 +57,7 @@ const OverviewProject: React.FC<OverviewProjectProps> = props => {
         id={props.data.id}
         mouseOver={onMouse}
         key={props.key}
-        onClick={() => history.push(`project/detail/${props.data.id}`)}
+        onClick={() => history.push(`/project/detail/${props.data.id}`)}
       >
         <ProjectOverviewContentBox>
           <ProjectOverviewHeaderBox>
