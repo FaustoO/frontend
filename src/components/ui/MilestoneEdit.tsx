@@ -1,6 +1,9 @@
 import Reac from "react"
 import styled from "styled-components"
-import { ConvertDateFormat } from "../../functions/cleaningData"
+import {
+  ConvertDateFormat,
+  PercentageConvertation
+} from "../../functions/cleaningData"
 import DescriptionBoxTextArea from "../forms/descriptionProjectForm"
 import EditForm from "../forms/editprojectnameform"
 import CircleProgressContent from "./CircleProgressContent"
@@ -104,6 +107,7 @@ const MilestoneEditComponent: React.FC<MilestoneEditComponentProps> = props => {
                 issmall={true}
                 defaultValue={elm.goal}
                 ismilestoneedit={true}
+                milestoneid={elm.id}
               ></EditForm>
             </MilestoneEditHeader>
             <MilestoneEditBody>
@@ -130,7 +134,7 @@ const MilestoneEditComponent: React.FC<MilestoneEditComponentProps> = props => {
                       Start Date
                     </MilestoneDateContentLabel>
                     <MilestoneDateDataContent>
-                      {elm.startDate}
+                      {ConvertDateFormat(elm.startDate)}
                     </MilestoneDateDataContent>
                   </MilestoneEditDataTopItem>
                   <MilestoneEditDataTopItem>
@@ -148,7 +152,7 @@ const MilestoneEditComponent: React.FC<MilestoneEditComponentProps> = props => {
                       End Date
                     </MilestoneDateContentLabel>
                     <MilestoneDateDataContent>
-                      {elm.dueDate}
+                      {ConvertDateFormat(elm.dueDate)}
                     </MilestoneDateDataContent>
                   </MilestoneEditDataTopItem>
                   <MilestoneEditDataTopItem>
@@ -156,7 +160,7 @@ const MilestoneEditComponent: React.FC<MilestoneEditComponentProps> = props => {
                       Progress
                     </MilestoneDateContentLabel>
                     <MilestoneDateDataContent>
-                      {elm.progress}%
+                      {PercentageConvertation(elm.progress)}%
                     </MilestoneDateDataContent>
                   </MilestoneEditDataTopItem>
                   <MilestoneEditDataTopItem>
@@ -164,7 +168,7 @@ const MilestoneEditComponent: React.FC<MilestoneEditComponentProps> = props => {
                       Relative Progress
                     </MilestoneDateContentLabel>
                     <MilestoneDateDataContent>
-                      {elm.relativeProgress} %
+                      {PercentageConvertation(elm.relativeProgress)} %
                     </MilestoneDateDataContent>
                   </MilestoneEditDataTopItem>
                 </MilestoneEditDatasBottom>
@@ -172,7 +176,13 @@ const MilestoneEditComponent: React.FC<MilestoneEditComponentProps> = props => {
               {/* DescriptionBox */}
             </MilestoneEditBody>
             <MilestoneEditBottom>
-              <DescriptionBoxTextArea></DescriptionBoxTextArea>
+              <DescriptionBoxTextArea
+                typemilestone
+                milestoneid={elm.id}
+                firstTimeChange={!elm.description ? true : false}
+                defaultValue={elm.description}
+                callbackFunction={props.callbackFunction}
+              ></DescriptionBoxTextArea>
             </MilestoneEditBottom>
           </>
         )

@@ -88,7 +88,7 @@ const CircleProgressContent: React.FC<CircleProgressContentProps> = props => {
               style={{
                 display: "flex",
                 fontFamily: "aileron",
-                fontSize: props.progressvalue > 1 ? "50px" : "72px",
+                fontSize: "50px",
                 fontStyle: "normal",
                 fontWeight: 400,
                 lineHeight: "86px",

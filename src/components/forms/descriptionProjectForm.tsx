@@ -19,6 +19,8 @@ export interface DescriptionBoxTextAreaProps {
   defaultValue?: null | string
   firstTimeChange?: boolean
   callbackFunction?: any
+  typemilestone?: boolean
+  milestoneid?: string
 }
 
 const DescriptionInput = styled.textarea`
@@ -119,12 +121,37 @@ const DescriptionBoxTextArea: React.FC<DescriptionBoxTextAreaProps> = props => {
       }
     }
   }
+  const handleDescriptionForMilestone = async (e: any) => {
+    e.preventDefault()
+    console.log("descr", props.milestoneid)
+    if (activeDescriptionText === "") {
+    } else {
+      if (processName === "Save") {
+        await axios
+          .put(`project/detail/milestones/${props.milestoneid}`, {
+            description: activeDescriptionText
+          })
+          .then(res => {
+            console.log("YOVVVV")
+            setWithoutSave(false)
+            setDefaultValue([...defaultValue, res.data.description])
+            props.callbackFunction()
+            InputBoxRef.current.value = res.data.description
+          })
+          .catch(err => console.log(err))
+      }
+    }
+  }
 
   return (
     <>
       <DescriptionBoxContainer>
         <form
-          onSubmit={handleDescriptionBoxSubmit}
+          onSubmit={
+            props.typemilestone
+              ? handleDescriptionForMilestone
+              : handleDescriptionBoxSubmit
+          }
           id="descriptionboxform"
           style={{ display: "flex", width: "100%" }}
         >

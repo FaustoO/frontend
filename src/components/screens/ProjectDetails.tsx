@@ -82,6 +82,11 @@ const ProjectDetailPage: React.FC<Props> = props => {
   const [activeMilestoneData, setActiveMilestoneData] = React.useState<any[]>(
     []
   )
+  let DraggerRef = React.useRef<React.MutableRefObject<any> | any>()
+  const ChangeDraggerRef = dom => {
+    console.log("checkitout", dom)
+    DraggerRef = dom
+  }
   const getdata = async () => {
     const state = props.match.params
     const id = (state as any)?.id
@@ -100,6 +105,13 @@ const ProjectDetailPage: React.FC<Props> = props => {
   const getMilestoneDataInfo = (activeMilestione: any[]) => {
     setActiveMilestoneData(activeMilestione)
   }
+  // React.useState(()=>{
+  //   if activeMilestoneData.length>1{
+
+  //   }
+
+  // },[activeMilestoneData])
+
   const ProjectDetailContent: any = React.useCallback(() => {
     return data?.map((elm, index) => (
       <ProjectDetailsContainer ismilestoneedit={milestoneEditTab} key={index}>
@@ -121,7 +133,7 @@ const ProjectDetailPage: React.FC<Props> = props => {
           <TopHeaderLeft>
             <CircleProgressContent
               progressvalue={
-                elm.milestones.length > 1 ? elm.goalAchievingProbability : 0
+                elm.milestones.length > 0 ? elm.goalAchievingProbability : 0
               }
             ></CircleProgressContent>
           </TopHeaderLeft>
@@ -210,6 +222,7 @@ const ProjectDetailPage: React.FC<Props> = props => {
                     elm.startDate,
                     elm.goal
                   ]}
+                  DraggerRef={ChangeDraggerRef}
                   milestones={elm.milestones}
                   goalachiveng={
                     elm.milestones.length > 1 ? elm.goalAchievingProbability : 0
@@ -266,7 +279,9 @@ const ProjectDetailPage: React.FC<Props> = props => {
                 goalachivevalue={
                   elm.milestones.length > 1 ? elm.goalAchievingProbability : 0
                 }
-                data={activeMilestoneData}
+                data={elm.milestones.filter(
+                  elm => elm.id === activeMilestoneData[0].id
+                )}
                 callbackFunction={getdata}
                 isOpened={milestoneEditTab}
               ></MilestoneEditComponent>

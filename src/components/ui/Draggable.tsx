@@ -45,6 +45,7 @@ interface DragComponentProps {
   editTab: () => void
   getMilestoneData: (activeMilestione: any[]) => void
   isEditTabOpened: boolean
+  DraggerRef: any
 }
 const DragComponent: React.FC<DragComponentProps> = props => {
   const [characters, updateCharacters] = useState(props.milestones)
@@ -88,9 +89,15 @@ const DragComponent: React.FC<DragComponentProps> = props => {
                     {provided => (
                       <>
                         <MilestonesWrapper
-                          onClick={() => {
+                          onClick={e => {
                             console.log("you clicked")
                             props.editTab()
+
+                            console.log(
+                              provided.innerRef,
+                              provided.draggableProps,
+                              provided.dragHandleProps
+                            )
                             props.getMilestoneData([
                               {
                                 id,

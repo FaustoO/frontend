@@ -13,6 +13,7 @@ export interface EditFormProjectProps {
   callbackFunction?: any
   ismilestoneedit?: boolean
   issmall?: boolean
+  milestoneid?: string
 }
 
 export const SubmitButton = styled.button`
@@ -64,9 +65,18 @@ const EditForm: React.FC<EditFormProjectProps> = props => {
     }
   }
   const handleMilestoneNameSubmit = (e: any) => {
-    console.log("heyooo")
+    console.log("heyooo", props.milestoneid, activeProjectName)
     e.preventDefault()
-    props.callbackFunction()
+
+    axios
+      .put(`project/detail/milestones/${props.milestoneid}`, {
+        goal:
+          activeProjectName.charAt(0).toUpperCase() + activeProjectName.slice(1)
+      })
+      .then(res => {
+        props.callbackFunction()
+      })
+      .catch(err => prompt(err))
   }
   return (
     <>
@@ -116,16 +126,9 @@ const EditForm: React.FC<EditFormProjectProps> = props => {
             }}
             onBlur={() => {
               setisFocus(false)
-
               SubmitButtonRef.current.click()
             }}
-            label={
-              isnameChanged
-                ? Label
-                : props.ismilestoneedit
-                ? "Type in the goal of the milestone here"
-                : "Project Goal Here*"
-            }
+            label={Label}
             name="Project name here"
             value={activeProjectName}
             inputProps={{ maxLength: 70 }}
