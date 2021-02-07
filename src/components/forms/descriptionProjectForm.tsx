@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import React from "react"
 import axios from "../../functions/axios"
-import { IconButton } from "@material-ui/core"
+import { IconButton, FormHelperText, TextField } from "@material-ui/core"
 import {
   DescriptionBoxContainer,
   SaveIcon,
@@ -11,12 +11,13 @@ import {
 import DiscardSvgIcon from "../../static/svgicon/discard.svg"
 import AcceptIcon from "../../static/svgicon/accept.svg"
 import { stringify } from "querystring"
+import { kStringMaxLength } from "buffer"
 
 export interface DescriptionBoxTextAreaProps {
   id?: string
   user?: string
   typeofproject?: string
-  defaultValue?: null | string
+  defaultValue?: string
   firstTimeChange?: boolean
   callbackFunction?: any
   typemilestone?: boolean
@@ -66,44 +67,43 @@ const DescriptionInput = styled.textarea`
 const DescriptionBoxTextArea: React.FC<DescriptionBoxTextAreaProps> = props => {
   const [activeDescriptionText, setActiveDescriptionText] = React.useState<
     string | any
-  >("")
+  >(props.defaultValue)
   const [withoutSave, setWithoutSave] = React.useState<boolean>(true)
   const [processName, setProcessName] = React.useState<string>("")
-  const [defaultValue, setDefaultValue] = React.useState<any>([""])
+  const [defaultValue, setDefaultValue] = React.useState<string | any>(
+    props.defaultValue
+  )
+  const [SaveProps, setSaveProps] = React.useState(false)
   const InputBoxRef = React.useRef<React.MutableRefObject<any> | any>()
-  React.useEffect(() => {
-    if (processName === "Discard" && withoutSave && props.firstTimeChange) {
-      setActiveDescriptionText(defaultValue[0])
-      InputBoxRef.current.value = defaultValue[0]
-    } else if (processName === "Discard" && withoutSave) {
-      InputBoxRef.current.value = props.defaultValue
-      setActiveDescriptionText(props.defaultValue)
-    } else if (processName === "Discard") {
-      if (defaultValue.length == 2) {
-        setActiveDescriptionText(props.defaultValue)
-        InputBoxRef.current.value = props.defaultValue
-      } else if (defaultValue.length > 2) {
-        setActiveDescriptionText(defaultValue[defaultValue.length - 2])
-        InputBoxRef.current.value = defaultValue[defaultValue.length - 2]
-      } else {
-        setActiveDescriptionText(defaultValue[0])
-        InputBoxRef.current.value = defaultValue[0]
-      }
-    }
-  }, [processName])
-  React.useEffect(() => {
-    if (props.firstTimeChange) {
-      //pass
-      InputBoxRef.current.value = defaultValue[0]
-    } else {
-      InputBoxRef.current.value = props.defaultValue
-    }
-  }, [])
+  // React.useEffect(() => {
+  //   if (processName === "Discard" && withoutSave && props.firstTimeChange) {
+  //     setActiveDescriptionText(defaultValue)
+  //     InputBoxRef.current.value = defaultValue
+  //   } else if (processName === "Discard" && withoutSave) {
+  //     InputBoxRef.current.value = props.defaultValue
+  //     setActiveDescriptionText(props.defaultValue)
+  //   } else if (processName === "Discard") {
+  //     if (defaultValue.length == 2) {
+  //       setActiveDescriptionText(props.defaultValue)
+  //       InputBoxRef.current.value = props.defaultValue
+  //     } else if (defaultValue.length > 2) {
+  //       setActiveDescriptionText(defaultValue)
+  //       InputBoxRef.current.value = defaultValue[defaultValue.length - 2]
+  //     } else {
+  //       setActiveDescriptionText(defaultValue)
+  //       InputBoxRef.current.value = defaultValue[0]
+  //     }
+  //   }
+  // }, [processName])
+
   const handleDescriptionBoxSubmit = async (e: any) => {
     e.preventDefault()
 
     if (activeDescriptionText === "") {
-    } else {
+    } else if (
+      activeDescriptionText !== "" &&
+      activeDescriptionText !== props.defaultValue
+    ) {
       if (processName === "Save") {
         await axios
           .put(`project/detail/${props.id}`, {
@@ -112,10 +112,9 @@ const DescriptionBoxTextArea: React.FC<DescriptionBoxTextAreaProps> = props => {
             description: activeDescriptionText
           })
           .then(res => {
-            setWithoutSave(false)
-            setDefaultValue([...defaultValue, res.data.description])
+            // setWithoutSave(false)
+            // setDefaultValue([...defaultValue, res.data.description])
             props.callbackFunction()
-            InputBoxRef.current.value = res.data.description
           })
           .catch(err => prompt(err.response))
       }
@@ -133,10 +132,8 @@ const DescriptionBoxTextArea: React.FC<DescriptionBoxTextAreaProps> = props => {
           })
           .then(res => {
             console.log("YOVVVV")
-            setWithoutSave(false)
-            setDefaultValue([...defaultValue, res.data.description])
+            // setWithoutSave(false)
             props.callbackFunction()
-            InputBoxRef.current.value = res.data.description
           })
           .catch(err => console.log(err))
       }
@@ -153,22 +150,56 @@ const DescriptionBoxTextArea: React.FC<DescriptionBoxTextAreaProps> = props => {
               : handleDescriptionBoxSubmit
           }
           id="descriptionboxform"
-          style={{ display: "flex", width: "100%" }}
+          style={{ display: "flex", width: "100%", flexDirection: "column" }}
         >
-          <DescriptionInput
-            style={{ fontFamily: "aileron" }}
+          <TextField
+            style={{
+              fontFamily: "aileron",
+              all: "inherit",
+              flexBasis: "100%",
+              cursor: "text"
+            }}
             ref={InputBoxRef}
             onChange={(e: any) => {
               setActiveDescriptionText(e.target.value)
             }}
-          ></DescriptionInput>
+            onFocus={e => {
+              setActiveDescriptionText("")
+            }}
+            onBlur={e => {
+              if (activeDescriptionText === "") {
+                setActiveDescriptionText(props.defaultValue)
+              }
+            }}
+            value={activeDescriptionText}
+            type="text-area"
+            multiline={true}
+            InputProps={{
+              disableUnderline: true,
+              style: {
+                all: "inherit",
+                color: "rgba(240, 240, 255, 0.7)",
+                fontSize: "15px"
+              }
+            }}
+            rowsMax={props.typemilestone ? 6 : 20}
+            error={activeDescriptionText?.length > 4999}
+            helperText={
+              activeDescriptionText.length > 4999 &&
+              "The description text  cannot be more than 5000 character"
+            }
+          ></TextField>
         </form>
       </DescriptionBoxContainer>
       <SaveDiscardContainer>
         <IconButton
-          disabled={!activeDescriptionText}
+          disabled={
+            activeDescriptionText === props.defaultValue ||
+            activeDescriptionText === ""
+          }
           onClick={() => {
             setProcessName("Save")
+            setSaveProps(true)
           }}
           id="savebutton"
           type="submit"
@@ -177,12 +208,15 @@ const DescriptionBoxTextArea: React.FC<DescriptionBoxTextAreaProps> = props => {
           <SaveIcon src={AcceptIcon}></SaveIcon>
         </IconButton>
         <IconButton
-          disabled={!activeDescriptionText}
+          disabled={
+            activeDescriptionText === props.defaultValue ||
+            activeDescriptionText === ""
+          }
           onBlur={() => {
             setProcessName("")
           }}
           onClick={() => {
-            setProcessName("Discard")
+            setActiveDescriptionText(props.defaultValue)
           }}
           id="discardbutton"
         >

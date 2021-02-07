@@ -131,7 +131,7 @@ export const calculateDatesPositioning = (
   }
 }
 
-const CleanTypeOfData = (projecttype: string) => {
+const CleanTypeOfData = (projecttype: string | undefined) => {
   let stringprojectname = ""
   if (projecttype === "S") {
     stringprojectname = "Step By Step"
@@ -140,7 +140,7 @@ const CleanTypeOfData = (projecttype: string) => {
   } else if (projecttype === "Cyc") {
     //pass
   }
-  return { stringprojectname }
+  return stringprojectname
 }
 const Convertpercentage = (value: number | any | undefined) => {
   let convertednumber = value * 10
@@ -180,10 +180,16 @@ const LinearProgressBarCleaningData = (value: number) => {
     percentageTimeDifference
   }
 }
+const truncate = (str: string, cutpoint: number, maxlimitlength: number) => {
+  return str.length > maxlimitlength
+    ? `${str.substring(0, cutpoint) + "..."}`
+    : str
+}
 export {
   CleanTypeOfData,
   Convertpercentage,
   ConvertDateFormat,
   LinearProgressBarCleaningData,
-  calculateMilestonesPositioning
+  calculateMilestonesPositioning,
+  truncate
 }

@@ -328,7 +328,7 @@ const LinearProgressBar: React.FC<LinearProgressBarProps> = props => {
               return (
                 <Tooltip title={`Milestone ${index + 1}`}>
                   <MilestonesIcon
-                    position={elm}
+                    position={elm > 99 ? elm - 2 : elm}
                     src={MilestonePointer}
                   ></MilestonesIcon>
                 </Tooltip>

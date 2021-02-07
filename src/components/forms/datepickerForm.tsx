@@ -15,12 +15,13 @@ const SubmitButton = styled.button`
   cursor: none;
 `
 export interface DatePickerFormProps {
-  id: string
-  user: string
-  typeofproject: string
+  id?: string
+  user?: string
+  typeofproject?: string
   defaultStartData?: string
   defaultPlannedEndData?: string
-  callbackFunction: any
+  callbackFunction?: any
+  ismilestone?: boolean
 }
 
 const DatePickerForm: React.FC<DatePickerFormProps> = props => {
@@ -67,6 +68,26 @@ const DatePickerForm: React.FC<DatePickerFormProps> = props => {
     active = mm + "-" + dd + "-" + yyyy
     setActiveEndDate(active)
   }
+  const handleActiveMilestoneEndDate = (date: Date | null) => {
+    let active: any = new Date()
+    let activemonth: any = date?.getMonth()
+    let dd = String(date?.getDate()).padStart(2, "0")
+    let mm = String(activemonth + 1).padStart(2, "0") //January is 0!
+    let yyyy = date?.getFullYear()
+    active = mm + "-" + dd + "-" + yyyy
+    setActiveEndDate(active)
+  }
+  const handleActiveMilestoneStartDate = (date: Date | null) => {
+    let activemonth: any = date?.getMonth()
+    let active: any = new Date()
+    let dd = String(date?.getDate()).padStart(2, "0")
+    let mm = String(activemonth + 1).padStart(2, "0") //January is 0!
+
+    let yyyy = date?.getFullYear()
+    active = mm + "-" + dd + "-" + yyyy
+
+    setActiveStartDate(active)
+  }
 
   const handleSubmit = async (e: any) => {
     e.preventDefault()
@@ -86,18 +107,42 @@ const DatePickerForm: React.FC<DatePickerFormProps> = props => {
       .catch(err => prompt(err.response.data.non_field_errors))
   }
 
+  const handleMilestoneDateSubmit = async (e: any) => {
+    e.preventDefault()
+    const ActiveStarDateClean = activeStartDate || defaultStartDate
+    const ActiveEndDateClean = activeEndDate || defaultEndDate
+    await axios
+      .put(`project/detail/milestones/${props.id}`, {
+        dueDate: ActiveEndDateClean
+      })
+      .then(res => {
+        props.callbackFunction()
+      })
+      .catch(err => prompt(err.response.data.non_field_errors))
+    console.log("milestone end adate checkhere")
+  }
+
   return (
     <>
       <Form
         id="datepickerform"
         method="post"
         ref={datepickerformref}
-        onSubmit={handleSubmit}
+        onSubmit={props.ismilestone ? handleMilestoneDateSubmit : handleSubmit}
       >
         <DatePicker
+          ismilestoneedit={props.ismilestone}
           projecttype={props.typeofproject}
-          handleStartDate={handleActiveStartDate}
-          handleEndDate={handleActivePlanningEndDate}
+          handleStartDate={
+            props.ismilestone
+              ? handleActiveMilestoneStartDate
+              : handleActiveStartDate
+          }
+          handleEndDate={
+            props.ismilestone
+              ? handleActiveMilestoneEndDate
+              : handleActivePlanningEndDate
+          }
           defaultStartData={props.defaultStartData}
           defaultPlannedEndData={props.defaultPlannedEndData}
         ></DatePicker>

@@ -1,10 +1,13 @@
-import Reac from "react"
+import React from "react"
 import styled from "styled-components"
 import {
   ConvertDateFormat,
-  PercentageConvertation
+  PercentageConvertation,
+  truncate
 } from "../../functions/cleaningData"
+import DatePickerForm from "../forms/datepickerForm"
 import DescriptionBoxTextArea from "../forms/descriptionProjectForm"
+import DurationForm from "../forms/durationForm"
 import EditForm from "../forms/editprojectnameform"
 import CircleProgressContent from "./CircleProgressContent"
 import {
@@ -95,17 +98,25 @@ const MilestoneEditDataTopItem = styled.div`
   flex-direction: column;
   width: 40%;
 `
+
 const MilestoneEditComponent: React.FC<MilestoneEditComponentProps> = props => {
   return (
     <MilestoneEditContainer isOpened={props.isOpened}>
       {props.data.map(elm => {
+        {
+          console.log(elm.goal.length)
+        }
         return (
           <>
             <MilestoneEditHeader>
               <EditForm
                 callbackFunction={props.callbackFunction}
                 issmall={true}
-                defaultValue={elm.goal}
+                defaultValue={
+                  elm.goal.length > 41
+                    ? truncate(elm.goal, 26, 41)
+                    : truncate(elm.goal, 36, 41)
+                }
                 ismilestoneedit={true}
                 milestoneid={elm.id}
               ></EditForm>
@@ -142,7 +153,11 @@ const MilestoneEditComponent: React.FC<MilestoneEditComponentProps> = props => {
                       Duration
                     </MilestoneDateContentLabel>
                     <MilestoneDateDataContent>
-                      {elm.duration} Days
+                      <DurationForm
+                        defaultValue={elm.duration}
+                        callbackFunction={props.callbackFunction}
+                        milestoneid={elm.id}
+                      ></DurationForm>
                     </MilestoneDateDataContent>
                   </MilestoneEditDataTopItem>
                 </MilestoneEditDatasTop>
@@ -152,7 +167,14 @@ const MilestoneEditComponent: React.FC<MilestoneEditComponentProps> = props => {
                       End Date
                     </MilestoneDateContentLabel>
                     <MilestoneDateDataContent>
-                      {ConvertDateFormat(elm.dueDate)}
+                      <DatePickerForm
+                        defaultStartData={elm.startDate}
+                        defaultPlannedEndData={elm.dueDate}
+                        ismilestone
+                        callbackFunction={props.callbackFunction}
+                        id={elm.id}
+                      ></DatePickerForm>
+                      {/* {ConvertDateFormat(elm.dueDate)} */}
                     </MilestoneDateDataContent>
                   </MilestoneEditDataTopItem>
                   <MilestoneEditDataTopItem>
@@ -160,7 +182,7 @@ const MilestoneEditComponent: React.FC<MilestoneEditComponentProps> = props => {
                       Progress
                     </MilestoneDateContentLabel>
                     <MilestoneDateDataContent>
-                      {PercentageConvertation(elm.progress)}%
+                      {Math.ceil(PercentageConvertation(elm.progress))}%
                     </MilestoneDateDataContent>
                   </MilestoneEditDataTopItem>
                   <MilestoneEditDataTopItem>
@@ -168,7 +190,7 @@ const MilestoneEditComponent: React.FC<MilestoneEditComponentProps> = props => {
                       Relative Progress
                     </MilestoneDateContentLabel>
                     <MilestoneDateDataContent>
-                      {PercentageConvertation(elm.relativeProgress)} %
+                      {Math.ceil(PercentageConvertation(elm.relativeProgress))}%
                     </MilestoneDateDataContent>
                   </MilestoneEditDataTopItem>
                 </MilestoneEditDatasBottom>
@@ -180,7 +202,7 @@ const MilestoneEditComponent: React.FC<MilestoneEditComponentProps> = props => {
                 typemilestone
                 milestoneid={elm.id}
                 firstTimeChange={!elm.description ? true : false}
-                defaultValue={elm.description}
+                defaultValue={elm.description ? elm.description : ""}
                 callbackFunction={props.callbackFunction}
               ></DescriptionBoxTextArea>
             </MilestoneEditBottom>

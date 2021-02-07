@@ -10,16 +10,17 @@ import CalendarIcon from "../../static/svgicon/calendar.svg"
 import { CleanTypeOfData } from "../../functions/cleaningData"
 
 interface DatePickerProps {
-  defaultStartData?: string
-  defaultPlannedEndData?: string
+  defaultStartData?: string | any
+  defaultPlannedEndData?: string | any
   handleStartDate: any
   handleEndDate: any
-  projecttype: string
+  projecttype?: string
+  ismilestoneedit?: boolean
 }
 
-const DatePickerContainer = styled.div`
+const DatePickerContainer = styled.div<{ width: number }>`
   display: flex;
-  width: 35%;
+  width: ${p => p.width}%;
   justify-content: space-between;
 `
 const DetailContentHeader = styled.div`
@@ -95,66 +96,74 @@ const DatePicker: React.FC<DatePickerProps> = props => {
       getbutton[1].setAttribute("form", "datepickerform")
     }
   }, [onFocus])
-
+  let CannotBeEqual = new Date(props.defaultStartData)
+  CannotBeEqual.setDate(CannotBeEqual.getDate())
+  console.log(CannotBeEqual)
   return (
     <DetailContentHeader>
-      <DatePickerContainer>
+      <DatePickerContainer width={props.ismilestoneedit ? 86 : 35}>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          {!props.ismilestoneedit && (
+            <KeyboardDatePicker
+              margin={"normal"}
+              id="date-picker-dialog"
+              label="Start Date"
+              format="MM/dd/yyyy"
+              allowKeyboardControl={false}
+              value={ActiveStartDate}
+              InputLabelProps={{
+                style: {
+                  color: "rgba(228, 220, 0, 1)",
+                  fontSize: "18px",
+                  fontStyle: "normal",
+                  fontWeight: "bold",
+                  lineHeight: "25px",
+                  letterSpacing: "0em",
+                  textAlign: "left"
+                }
+              }}
+              InputProps={{
+                style: {
+                  borderBottom: "2px solid white",
+                  color: "rgba(240, 240, 255, 0.7)"
+                }
+              }}
+              DialogProps={{
+                onFocus: () => {
+                  setOnFocus(true)
+                },
+                onBlur: () => {
+                  setOnFocus(false)
+                }
+              }}
+              onChange={(e: any) => {
+                setActiveStartDate(e)
+                // const strdata =
+                //   ActiveStartDate?.getDate() +
+                //   "-" +
+                //   ActiveStartDate?.getMonth() +
+                //   "-" +
+                //   ActiveStartDate?.getFullYear()
+                props.handleStartDate(e)
+              }}
+              KeyboardButtonProps={{
+                "aria-label": "change date"
+              }}
+              keyboardIcon={
+                <CalendarIconComp src={CalendarIcon}></CalendarIconComp>
+              }
+            />
+          )}
           <KeyboardDatePicker
-            margin="normal"
+            margin={props.ismilestoneedit ? "none" : "normal"}
             id="date-picker-dialog"
-            label="Start Date"
+            label={props.ismilestoneedit ? "" : "Planning Date"}
             format="MM/dd/yyyy"
-            allowKeyboardControl={false}
-            value={ActiveStartDate}
-            InputLabelProps={{
-              style: {
-                color: "rgba(228, 220, 0, 1)",
-                fontSize: "18px",
-                fontStyle: "normal",
-                fontWeight: "bold",
-                lineHeight: "25px",
-                letterSpacing: "0em",
-                textAlign: "left"
-              }
-            }}
-            InputProps={{
-              style: {
-                borderBottom: "2px solid white",
-                color: "rgba(240, 240, 255, 0.7)"
-              }
-            }}
-            DialogProps={{
-              onFocus: () => {
-                setOnFocus(true)
-              },
-              onBlur: () => {
-                setOnFocus(false)
-              }
-            }}
-            onChange={(e: any) => {
-              setActiveStartDate(e)
-              // const strdata =
-              //   ActiveStartDate?.getDate() +
-              //   "-" +
-              //   ActiveStartDate?.getMonth() +
-              //   "-" +
-              //   ActiveStartDate?.getFullYear()
-              props.handleStartDate(e)
-            }}
-            KeyboardButtonProps={{
-              "aria-label": "change date"
-            }}
-            keyboardIcon={
-              <CalendarIconComp src={CalendarIcon}></CalendarIconComp>
+            minDate={
+              props.ismilestoneedit
+                ? CannotBeEqual.setDate(CannotBeEqual.getDate() + 1)
+                : ActiveStartDate
             }
-          />
-          <KeyboardDatePicker
-            margin="normal"
-            id="date-picker-dialog"
-            label="Planning Date"
-            format="MM/dd/yyyy"
-            minDate={ActiveStartDate}
             value={ActivePlannedDate}
             allowKeyboardControl={false}
             InputLabelProps={{
@@ -192,12 +201,14 @@ const DatePicker: React.FC<DatePickerProps> = props => {
           />
         </MuiPickersUtilsProvider>
       </DatePickerContainer>
-      <ProjectTypeContainer>
-        <ProjectTypeLabelText>Project Type</ProjectTypeLabelText>
-        <ExactProjectText>
-          {CleanTypeOfData(props.projecttype).stringprojectname}
-        </ExactProjectText>
-      </ProjectTypeContainer>
+      {!props.ismilestoneedit && (
+        <ProjectTypeContainer>
+          <ProjectTypeLabelText>Project Type</ProjectTypeLabelText>
+          <ExactProjectText>
+            {CleanTypeOfData(props.projecttype)}
+          </ExactProjectText>
+        </ProjectTypeContainer>
+      )}
     </DetailContentHeader>
   )
 }

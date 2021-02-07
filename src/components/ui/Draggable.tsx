@@ -31,7 +31,8 @@ import {
 import CircleProgressContent from "../ui/CircleProgressContent"
 import {
   ConvertDateFormat,
-  PercentageConvertation
+  PercentageConvertation,
+  truncate
 } from "../../functions/cleaningData"
 import LinearProgressBar from "../ui/LinearProgressBar"
 
@@ -125,7 +126,7 @@ const DragComponent: React.FC<DragComponentProps> = props => {
                               {" "}
                               <MilestoneGoalStatic>Goal</MilestoneGoalStatic>
                               <MilestoneGoalContent>
-                                {goal}
+                                {truncate(goal, 26, 41)}
                               </MilestoneGoalContent>
                             </MilestoneGoalStaticsContainer>
                           </MilestoneLeftSide>

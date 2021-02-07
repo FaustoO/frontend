@@ -225,7 +225,7 @@ const ProjectDetailPage: React.FC<Props> = props => {
                   DraggerRef={ChangeDraggerRef}
                   milestones={elm.milestones}
                   goalachiveng={
-                    elm.milestones.length > 1 ? elm.goalAchievingProbability : 0
+                    elm.milestones.length > 0 ? elm.goalAchievingProbability : 0
                   }
                 ></DragComponent>
               </DetailMilestoneContainer>
@@ -258,7 +258,7 @@ const ProjectDetailPage: React.FC<Props> = props => {
                 id={elm.id}
                 typeofproject={elm.typeofproject}
                 user={elm.user}
-                defaultValue={elm.description}
+                defaultValue={elm.description ? elm.description : ""}
                 firstTimeChange={!elm.description ? true : false}
               ></DescriptionBoxTextArea>
             </DetailContentContainer>
@@ -277,7 +277,7 @@ const ProjectDetailPage: React.FC<Props> = props => {
                   elm.startDate
                 ]}
                 goalachivevalue={
-                  elm.milestones.length > 1 ? elm.goalAchievingProbability : 0
+                  elm.milestones.length > 0 ? elm.goalAchievingProbability : 0
                 }
                 data={elm.milestones.filter(
                   elm => elm.id === activeMilestoneData[0].id
