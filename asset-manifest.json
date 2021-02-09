@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/frontend/static/css/main.93eb938e.chunk.css",
-    "main.js": "/frontend/static/js/main.5c61e02f.chunk.js",
-    "main.js.map": "/frontend/static/js/main.5c61e02f.chunk.js.map",
+    "main.js": "/frontend/static/js/main.6d5e2d46.chunk.js",
+    "main.js.map": "/frontend/static/js/main.6d5e2d46.chunk.js.map",
     "runtime-main.js": "/frontend/static/js/runtime-main.7e586e03.js",
     "runtime-main.js.map": "/frontend/static/js/runtime-main.7e586e03.js.map",
     "static/js/2.2d16b74d.chunk.js": "/frontend/static/js/2.2d16b74d.chunk.js",
@@ -20,6 +20,7 @@
     "static/media/bigprogressicon.686d5662.svg": "/frontend/static/media/bigprogressicon.686d5662.svg",
     "static/media/calendar.0684814e.svg": "/frontend/static/media/calendar.0684814e.svg",
     "static/media/clock.2e3e9123.svg": "/frontend/static/media/clock.2e3e9123.svg",
+    "static/media/closemilestonetab.7c172061.svg": "/frontend/static/media/closemilestonetab.7c172061.svg",
     "static/media/discard.20875ae6.svg": "/frontend/static/media/discard.20875ae6.svg",
     "static/media/iflogo.9c5fc5f2.svg": "/frontend/static/media/iflogo.9c5fc5f2.svg",
     "static/media/milestonepointer.ee3b518f.svg": "/frontend/static/media/milestonepointer.ee3b518f.svg",
@@ -35,6 +36,6 @@
     "static/js/runtime-main.7e586e03.js",
     "static/js/2.2d16b74d.chunk.js",
     "static/css/main.93eb938e.chunk.css",
-    "static/js/main.5c61e02f.chunk.js"
+    "static/js/main.6d5e2d46.chunk.js"
   ]
 }
