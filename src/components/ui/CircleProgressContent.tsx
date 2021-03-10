@@ -6,14 +6,26 @@ import {
   Convertpercentage,
   PercentageConvertation
 } from "../../functions/cleaningData"
+import { REFUSED } from "dns"
 
 export interface CircleProgressContentProps {
   smallSize?: boolean
   progressvalue?: number | any
   mediumSize?: boolean
+  treeView?: boolean
+  mainone?: boolean
+  edittab?: boolean
 }
 
 const CircleProgressContent: React.FC<CircleProgressContentProps> = props => {
+  // React.useEffect(() => {
+  //   console.log(
+  //     "checkhtah",
+  //     props.progressvalue,
+  //     PercentageConvertation(props.progressvalue)
+  //   )
+  // }, [])
+  let checkitout: any = props.mainone || props.treeView
   return (
     <Box position="relative" display="inline-flex" visibility={"visible"}>
       <CircularProgress
@@ -36,7 +48,7 @@ const CircleProgressContent: React.FC<CircleProgressContentProps> = props => {
         value={
           props.progressvalue >= 1
             ? 100
-            : Convertpercentage(props.progressvalue).converted
+            : PercentageConvertation(props.progressvalue)
         }
       />
       <Box
@@ -83,12 +95,12 @@ const CircleProgressContent: React.FC<CircleProgressContentProps> = props => {
             color: "rgba(240, 240, 255, 1)"
           }}
         >
-          {!props.smallSize && (
+          {checkitout && (
             <div
               style={{
                 display: "flex",
                 fontFamily: "aileron",
-                fontSize: "50px",
+                fontSize: props.treeView ? "25px" : "50px",
                 fontStyle: "normal",
                 fontWeight: 400,
                 lineHeight: "86px",
@@ -100,12 +112,12 @@ const CircleProgressContent: React.FC<CircleProgressContentProps> = props => {
                 ? ">100"
                 : PercentageConvertation(props.progressvalue) == 0
                 ? " "
-                : PercentageConvertation(props.progressvalue)}
+                : Math.ceil(PercentageConvertation(props.progressvalue))}
               <div
                 style={{
                   display: "inline-flex",
                   fontFamily: "aileron",
-                  fontSize: "36px",
+                  fontSize: props.treeView ? "10px" : "36px",
                   fontStyle: "normal",
                   fontWeight: 400,
                   lineHeight: "43px",

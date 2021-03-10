@@ -1,6 +1,55 @@
 import React, { SVGProps } from "react"
-import styled from "styled-components"
+import styled, { keyframes, css } from "styled-components"
 import SVG from "react-inlinesvg"
+
+//ICONS
+export const UserLogoImage = styled.img``
+
+export const SearchButtonIcon = styled.img`
+  width: 42px;
+  cursor: pointer;
+  height: 32px;
+`
+export const LeaftAsideContent2Image = styled.img``
+
+export const MilestonesTabIcon = styled.img`
+  width: 33px;
+  height: 33px;
+  cursor: pointer;
+  color: green;
+  ::&svg {
+    fill: green;
+  }
+`
+
+export const TopHeaderLeftBıgProgressIcon = styled.img<{
+  small?: boolean
+  medium?: boolean
+}>`
+  ${p =>
+    p.small
+      ? p.medium
+        ? "height:70px;width:70px;"
+        : "height:48px;width:48px;"
+      : "height:auto;width:auto;"}
+`
+
+export const MilestoneCloseEditTabIcon = styled.img`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  max-height: 40px;
+  max-width: 26px;
+  left: 0;
+  top: 60px;
+  cursor: pointer;
+`
+
+export const MilestoneAddButtonIcon = styled.img`
+  height: 31px;
+  cursor: pointer;
+  width: 31px;
+`
 
 export const MilestoneTabIcon = styled(SVG)<SVGProps<any>>`
   width: 33px;
@@ -10,6 +59,11 @@ export const MilestoneTabIcon = styled(SVG)<SVGProps<any>>`
     fill: ${({ color }) => color};
   }
 `
+export const ClockIconImage = styled.img`
+  height: 42px;
+  width: 42px;
+`
+
 export const MilestoneSearchTabIcon = styled(SVG)<SVGProps<any>>`
   width: 42px;
   height: 32px;
@@ -18,9 +72,56 @@ export const MilestoneSearchTabIcon = styled(SVG)<SVGProps<any>>`
     fill: ${({ color }) => color};
   }
 `
+export const MilestoneTreeViewIcon = styled(SVG)<SVGProps<any>>`
+  cursor: pointer;
+  max-width: 121px;
+  position: absolute;
+  right: 0;
+  top: 65%;
+  max-height: 186px;
+  & path {
+    fill: ${({ color }) => color};
+  }
+`
+export const ProgressBarImage = styled.img`
+  width: 70px;
+  height: 70px;
+`
+
+const rotate = keyframes`
+from {
+  transform: rotate(0deg);
+}
+
+to {
+  transform: rotate(360deg);
+}
+`
+export const FrameIconElement = styled.img<{ Spin?: boolean }>`
+  width: 45px;
+  height: 45px;
+  animation: ${props =>
+    props.Spin
+      ? css`
+          ${rotate} 2s linear infinite
+        `
+      : ""};
+`
+export const SettingsIconElement = styled.img`
+  width: 45px;
+  height: 45px;
+`
+export const SaveIcon = styled.img`
+  cursor: pointer;
+`
+export const DiscardIcon = styled.img`
+  cursor: pointer;
+`
+
 // Body
 export const BodyContainer = styled.div`
   display: flex;
+  position: relative;
   height: 90vh;
   width: 100%;
   flex: 1;
@@ -94,14 +195,6 @@ export const NavbarUserContainer = styled.div`
 export const NavbarItem = styled.div`
   display: flex;
   position: relative;
-`
-export const FrameIconElement = styled.img`
-  width: 45px;
-  height: 45px;
-`
-export const SettingsIconElement = styled.img`
-  width: 45px;
-  height: 45px;
 `
 export const CreateNewProjectButtonContainer = styled.div`
   display: flex;
@@ -194,6 +287,7 @@ export const ProjectDetailsContainer = styled.div<{ ismilestoneedit: boolean }>`
 export const Detail2 = styled.div`
   grid-area: Detail-Content-2;
   border-radius: 5px;
+  position: relative;
   padding: 45px 95px 55px 35px;
   background: rgba(50, 50, 77, 1);
 `
@@ -231,7 +325,6 @@ export const LeftAsideContent2 = styled.div`
   align-items: center;
   flex-direction: row;
 `
-export const LeaftAsideContent2Image = styled.img``
 export const LeftAsideContent2TextBox = styled.div`
   display: flex;
   position: relative;
@@ -244,7 +337,6 @@ export const LeftAsideContent2TextBox = styled.div`
   text-align: left;
 `
 
-export const UserLogoImage = styled.img``
 export const UserNameContainer = styled.div`
   display: flex;
   max-width: 116px;
@@ -271,17 +363,6 @@ export const TopHeader = styled.div`
 `
 export const TopHeaderLeft = styled.div`
   display: flex;
-`
-export const TopHeaderLeftBıgProgressIcon = styled.img<{
-  small?: boolean
-  medium?: boolean
-}>`
-  ${p =>
-    p.small
-      ? p.medium
-        ? "height:70px;width:70px;"
-        : "height:48px;width:48px;"
-      : "height:auto;width:auto;"}
 `
 export const TopHeaderRight = styled.div`
   width: 80%;
@@ -339,20 +420,6 @@ export const ControlPanelItemsContainer = styled.div`
   min-height: 96px;
   justify-content: space-between;
 `
-export const SearchButtonIcon = styled.img`
-  width: 42px;
-  cursor: pointer;
-  height: 32px;
-`
-export const MilestonesTabIcon = styled.img`
-  width: 33px;
-  height: 33px;
-  cursor: pointer;
-  color: green;
-  ::&svg {
-    fill: green;
-  }
-`
 
 export const DetailContent = styled.div`
   grid-area: Detail-Content;
@@ -363,7 +430,7 @@ export const DetailContent = styled.div`
 export const DetailContentContainer = styled.div`
   display: flex;
   height: 100%;
-
+  position: relative;
   width: 100%;
   flex-direction: column;
 `
@@ -380,12 +447,6 @@ export const SaveDiscardContainer = styled.div`
   justify-content: flex-end;
   width: 100%;
 `
-export const SaveIcon = styled.img`
-  cursor: pointer;
-`
-export const DiscardIcon = styled.img`
-  cursor: pointer;
-`
 export const DetailMilestonesRoot = styled.div`
   display: flex;
   height: 100%;
@@ -399,7 +460,6 @@ export const DetailMilestoneContainer = styled.div<{ width: number }>`
   width: ${p => p.width}%;
   height: 100%;
   flex-direction: column;
-  justify-content: space-between;
 `
 
 export const MilestonesHeader = styled.div`
@@ -425,12 +485,8 @@ export const MilestoneHeaderHintText = styled.div`
 export const MilestoneAddButtonContainer = styled.div`
   display: flex;
   width: 100%;
+  padding: 20px 0;
   justify-content: flex-end;
-`
-export const MilestoneAddButtonIcon = styled.img`
-  height: 31px;
-  cursor: pointer;
-  width: 31px;
 `
 export const MilestonesBodyRoot = styled.div`
   display: flex;
@@ -463,13 +519,17 @@ export const MilestonesBodyRoot = styled.div`
     border-radius: 5px;
   }
 `
-export const MilestonesWrapper = styled.div`
+export const MilestonesWrapper = styled.div<{ mouseOver?: boolean }>`
   display: flex;
   padding: 12px 0px 12px 0px;
   height: 10%;
   max-height: 10%;
   border-radius: 5px;
-  border: 3px solid rgba(240, 240, 255, 0.1);
+  border: ${p =>
+    p.mouseOver
+      ? "3px solid rgba(228, 220, 0, 1)"
+      : "3px solid rgba(240, 240, 255, 0.1)"};
+
   max-width: 100%;
   flex-basis: 100%;
   justify-content: space-between;
@@ -481,18 +541,16 @@ export const MilestonesWrapper = styled.div`
 export const MilestoneLeftSide = styled.div`
   display: flex;
   flex-grow: 0;
-  min-width: fit-content;
+
   flex-basis: 30%;
   max-width: 30%;
+  min-width: 397.5px;
+
   flex-direction: row;
   justify-content: space-evenly;
 `
 export const ClockIconContainer = styled.div`
   display: flex;
-`
-export const ClockIconImage = styled.img`
-  height: 42px;
-  width: 42px;
 `
 
 export const MilestoneGoalStaticsContainer = styled.div`
@@ -661,10 +719,6 @@ export const ProjectContentBox = styled.div`
 `
 export const ProgressBarContainer = styled.div`
   display: flex;
-`
-export const ProgressBarImage = styled.img`
-  width: 70px;
-  height: 70px;
 `
 export const MainProjectContainer = styled.div`
   display: flex;

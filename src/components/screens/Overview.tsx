@@ -20,7 +20,10 @@ import {
   SubSubProjectBox,
   SubSubProjectItem
 } from "../ui/ConstantUi"
-
+import CircleProgressContent from "../ui/CircleProgressContent"
+import { useSelector, useDispatch } from "react-redux"
+import { fetchProjects } from "../redux/project/projectActions"
+import { RootStore } from "../redux/project/projectReducer"
 const SubSubProjectGroupBox = styled.div``
 interface OverviewProjectProps {
   children: JsxElement[]
@@ -31,23 +34,14 @@ interface LoadedDataProps {
 }
 
 const OverviewProject: React.FC<OverviewProjectProps> = props => {
-  const [data, setData] = React.useState<any[] | null>()
-  const getdata = async () => {
-    await axios
-      .get(`project/all/`)
-      .then(res => {
-        res.data.length > 0 ? setData(res.data) : setData(null)
-      })
-      .catch(err => prompt(err))
-  }
-  React.useEffect(() => {
-    getdata()
-  }, [])
-  const history = useHistory()
+  const loading = useSelector((state: RootStore) => state.loading)
+  const projects = useSelector((state: RootStore) => state.projects)
+  const error = useSelector((state: RootStore) => state.error)
 
+  console.log("all projects", projects)
+  const history = useHistory()
   const LoadedData = (props: LoadedDataProps) => {
     const [onMouse, setOnMouse] = React.useState<boolean>(false)
-
     return (
       <ProjectOverviewWrapper
         onMouseEnter={() => setOnMouse(true)}
@@ -57,12 +51,18 @@ const OverviewProject: React.FC<OverviewProjectProps> = props => {
         id={props.data.id}
         mouseOver={onMouse}
         key={props.key}
-        onClick={() => history.push(`/project/detail/${props.data.id}`)}
+        onClick={() => {
+          history.push(`/project/detail/${props.data.id}`)
+        }}
       >
         <ProjectOverviewContentBox>
           <ProjectOverviewHeaderBox>
             <ProgressBarContainer>
-              <ProgressBarImage src={ProgressBar}></ProgressBarImage>
+              <CircleProgressContent
+                smallSize
+                mediumSize
+                progressvalue={props.data.goalAchievingProbability}
+              ></CircleProgressContent>
             </ProgressBarContainer>
             <HeaderTextContainer>
               <GoalText>Goal</GoalText>
@@ -100,12 +100,16 @@ const OverviewProject: React.FC<OverviewProjectProps> = props => {
     )
   }
 
-  return data ? (
+  return loading ? (
+    <div></div>
+  ) : projects.length > 0 ? (
     <>
-      {data?.map((data: any, index: number) => {
+      {projects.map((data: any, index: number) => {
         return <LoadedData data={data} key={index}></LoadedData>
       })}
     </>
+  ) : error ? (
+    <div></div>
   ) : (
     <h2>Project Not Created</h2>
   )

@@ -1,18 +1,20 @@
 import { TextField, Typography } from "@material-ui/core"
-import React, { Component } from "react"
-import { inherits } from "util"
-import axios from "../../functions/axios"
+import React from "react"
 import { SubmitButton } from "./editprojectnameform"
-import { withStyles } from "@material-ui/core/styles"
-import { useStyles } from "@material-ui/pickers/views/Calendar/Day"
-import { durationUpdate } from "../../functions/process"
-import { useDispatch, useSelector } from "react-redux"
-import { RootStore } from "../redux/project/projectReducer"
-export interface DurationFormProps {
+import {
+  Convertpercentageforbackend,
+  PercentageConvertation
+} from "../../functions/cleaningData"
+import {
+  calculateGoalAchievingProbability,
+  progressUpdate
+} from "../../functions/process"
+import { useDispatch } from "react-redux"
+import { UpdateSingleProjectOrMilestoneUpdate } from "../redux/project/projectActions"
+export interface ProgressFormProps {
   defaultValue: number
   milestoneid: string
   callbackFunction?: any
-  milestones: any
   projectid: any
 }
 
@@ -32,24 +34,44 @@ export interface DurationFormProps {
 //     }
 //   }
 // })
-const DurationForm: React.FC<DurationFormProps> = props => {
+const ProgressForm: React.FC<ProgressFormProps> = props => {
   const dispatch = useDispatch()
-  const project: any = useSelector((state: RootStore) =>
-    state.projects.find(project => project.id == props.projectid)
-  )
-  const plannedEndDate = project.plannedEndDate
   const handleDurationEdit = async e => {
+    // console.log(
+    //   "heyooo",
+    //   props.milestoneid,
+    //   activeProjectName,
+    //   Convertpercentageforbackend(activeProjectName)
+    // )
     e.preventDefault()
-    await durationUpdate(
-      Number(activeProjectName),
-      props.callbackFunction,
+    const promises: any = []
+
+    progressUpdate(
+      Convertpercentageforbackend(activeProjectName),
       props.milestoneid,
-      props.milestones,
-      props.projectid,
-      plannedEndDate
+      props.projectid
     )
-    // await store.dispatch(getTotalUpdateForMilestone(props.projectid))
-    // dispatch(getTotalUpdateForMilestone())
+    // promises.push(
+    //   dispatch(
+    //     UpdateSingleProjectOrMilestoneUpdate(
+    //       props.milestoneid,
+    //       [{ progress: Convertpercentageforbackend(activeProjectName) }],
+    //       true
+    //     )
+    //   )
+    // )
+    // await Promise.all(promises).then(async responses =>
+    //   getTotals(props.projectid)
+    // )
+    // await axios
+    //   .put(`project/detail/milestones/${props.milestoneid}`, {
+    //     progress:
+    //   })
+    //   .then(res => {
+    //     console.log(`Milestone progress updated${res.data.id}`)
+    //   })
+    //   .catch(err => prompt(err))
+
     // await getTotals(props.projectid, props.callbackFunction)
   }
   const [isFocus, setisFocus] = React.useState<boolean>(false)
@@ -63,7 +85,7 @@ const DurationForm: React.FC<DurationFormProps> = props => {
       <form ref={editformref} onSubmit={handleDurationEdit}>
         <div style={{ display: "flex", flexDirection: "row" }}>
           <TextField
-            style={{ width: "30%" }}
+            style={{ width: "20%" }}
             onFocus={() => {
               setisFocus(true)
             }}
@@ -94,10 +116,11 @@ const DurationForm: React.FC<DurationFormProps> = props => {
             type="number"
             inputProps={{
               style: { padding: 0, textAlign: "right" },
-              min: 1,
+              min: 0,
+              max: 100,
               inputMode: "numeric"
             }}
-            defaultValue={props.defaultValue}
+            defaultValue={Math.ceil(PercentageConvertation(props.defaultValue))}
           >
             {" "}
           </TextField>
@@ -106,9 +129,7 @@ const DurationForm: React.FC<DurationFormProps> = props => {
             disabled={!activeProjectName}
             type="submit"
           ></SubmitButton>
-          <Typography style={{ marginLeft: "5px" }}>
-            {props.defaultValue > 1 ? "Days" : "Day"}
-          </Typography>
+          <Typography style={{ marginLeft: "5px" }}>%</Typography>
         </div>
       </form>
 
@@ -120,7 +141,7 @@ const DurationForm: React.FC<DurationFormProps> = props => {
           maxHeight: "1px",
           minHeight: "1px",
           borderRadius: "5px",
-          width: "30%",
+          width: "20%",
           backgroundColor: " rgba(240, 240, 255, 1)"
         }}
       ></span>
@@ -128,4 +149,4 @@ const DurationForm: React.FC<DurationFormProps> = props => {
   )
 }
 
-export default DurationForm
+export default ProgressForm

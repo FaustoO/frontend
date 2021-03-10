@@ -12,9 +12,11 @@ import DiscardSvgIcon from "../../static/svgicon/discard.svg"
 import AcceptIcon from "../../static/svgicon/accept.svg"
 import { stringify } from "querystring"
 import { kStringMaxLength } from "buffer"
+import { useDispatch } from "react-redux"
+import { UpdateSingleProjectOrMilestoneUpdate } from "../redux/project/projectActions"
 
 export interface DescriptionBoxTextAreaProps {
-  id?: string
+  id?: number
   user?: string
   typeofproject?: string
   defaultValue?: string
@@ -65,6 +67,7 @@ const DescriptionInput = styled.textarea`
 `
 
 const DescriptionBoxTextArea: React.FC<DescriptionBoxTextAreaProps> = props => {
+  const dispatch = useDispatch()
   const [activeDescriptionText, setActiveDescriptionText] = React.useState<
     string | any
   >(props.defaultValue)
@@ -105,18 +108,26 @@ const DescriptionBoxTextArea: React.FC<DescriptionBoxTextAreaProps> = props => {
       activeDescriptionText !== props.defaultValue
     ) {
       if (processName === "Save") {
-        await axios
-          .put(`project/detail/${props.id}`, {
-            user: props.user,
-            typeofproject: props.typeofproject,
-            description: activeDescriptionText
-          })
-          .then(res => {
-            // setWithoutSave(false)
-            // setDefaultValue([...defaultValue, res.data.description])
-            props.callbackFunction()
-          })
-          .catch(err => prompt(err.response))
+        dispatch(
+          UpdateSingleProjectOrMilestoneUpdate(
+            props.id,
+            [{ description: activeDescriptionText }],
+            false
+          )
+        )
+
+        // await axios
+        //   .put(`project/detail/${props.id}`, {
+        //     user: props.user,
+        //     typeofproject: props.typeofproject,
+        //     description: activeDescriptionText
+        //   })
+        //   .then(res => {
+        //     // setWithoutSave(false)
+        //     // setDefaultValue([...defaultValue, res.data.description])
+        //     props.callbackFunction()
+        //   })
+        //   .catch(err => prompt(err.response))
       }
     }
   }
@@ -126,16 +137,23 @@ const DescriptionBoxTextArea: React.FC<DescriptionBoxTextAreaProps> = props => {
     if (activeDescriptionText === "") {
     } else {
       if (processName === "Save") {
-        await axios
-          .put(`project/detail/milestones/${props.milestoneid}`, {
-            description: activeDescriptionText
-          })
-          .then(res => {
-            console.log("YOVVVV")
-            // setWithoutSave(false)
-            props.callbackFunction()
-          })
-          .catch(err => console.log(err))
+        dispatch(
+          UpdateSingleProjectOrMilestoneUpdate(
+            props.milestoneid,
+            [{ description: activeDescriptionText }],
+            true
+          )
+        )
+        // await axios
+        //   .put(`project/detail/milestones/${props.milestoneid}`, {
+        //     description: activeDescriptionText
+        //   })
+        //   .then(res => {
+        //     console.log("YOVVVV")
+        //     // setWithoutSave(false)
+        //     props.callbackFunction()
+        //   })
+        //   .catch(err => console.log(err))
       }
     }
   }
@@ -163,14 +181,6 @@ const DescriptionBoxTextArea: React.FC<DescriptionBoxTextAreaProps> = props => {
             onChange={(e: any) => {
               setActiveDescriptionText(e.target.value)
             }}
-            onFocus={e => {
-              setActiveDescriptionText("")
-            }}
-            onBlur={e => {
-              if (activeDescriptionText === "") {
-                setActiveDescriptionText(props.defaultValue)
-              }
-            }}
             value={activeDescriptionText}
             type="text-area"
             multiline={true}
@@ -186,7 +196,7 @@ const DescriptionBoxTextArea: React.FC<DescriptionBoxTextAreaProps> = props => {
             error={activeDescriptionText?.length > 4999}
             helperText={
               activeDescriptionText.length > 4999 &&
-              "The description text  cannot be more than 5000 character"
+              "The description cannot contain more than 5000 characters."
             }
           ></TextField>
         </form>

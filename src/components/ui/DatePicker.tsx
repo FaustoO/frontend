@@ -16,6 +16,7 @@ interface DatePickerProps {
   handleEndDate: any
   projecttype?: string
   ismilestoneedit?: boolean
+  milestones: any
 }
 
 const DatePickerContainer = styled.div<{ width: number }>`
@@ -61,6 +62,22 @@ const ExactProjectText = styled.div`
 const CalendarIconComp = styled.img``
 
 const DatePicker: React.FC<DatePickerProps> = props => {
+  type FontWeight =
+    | "normal"
+    | "bold"
+    | "100"
+    | "200"
+    | "300"
+    | "400"
+    | "500"
+    | "600"
+    | "700"
+    | "800"
+    | "900"
+
+  const boldText = {
+    fontWeight: "400" as FontWeight
+  }
   // The first commit of Material-UI
 
   const [ActiveStartDate, setActiveStartDate] = React.useState<any | Date>(
@@ -98,7 +115,7 @@ const DatePicker: React.FC<DatePickerProps> = props => {
   }, [onFocus])
   let CannotBeEqual = new Date(props.defaultStartData)
   CannotBeEqual.setDate(CannotBeEqual.getDate())
-  console.log(CannotBeEqual)
+  // console.log(CannotBeEqual)
   return (
     <DetailContentHeader>
       <DatePickerContainer width={props.ismilestoneedit ? 86 : 35}>
@@ -123,6 +140,7 @@ const DatePicker: React.FC<DatePickerProps> = props => {
                 }
               }}
               InputProps={{
+                readOnly: true,
                 style: {
                   borderBottom: "2px solid white",
                   color: "rgba(240, 240, 255, 0.7)"
@@ -181,9 +199,17 @@ const DatePicker: React.FC<DatePickerProps> = props => {
               <CalendarIconComp src={CalendarIcon}></CalendarIconComp>
             }
             InputProps={{
+              readOnly: true,
               style: {
                 borderBottom: "2px solid white",
-                color: "rgba(240, 240, 255, 0.7)"
+                color: props.ismilestoneedit
+                  ? "rgba(240, 240, 255, 1)"
+                  : "rgba(240, 240, 255, 0.7)",
+                fontSize: props.ismilestoneedit ? "18px" : "auto",
+                fontStyle: props.ismilestoneedit ? "normal" : "auto",
+                lineHeight: props.ismilestoneedit ? "22px" : "auto",
+                letterSpacing: props.ismilestoneedit ? "0em" : "auto",
+                fontWeight: "-moz-initial"
               }
             }}
             DialogProps={{

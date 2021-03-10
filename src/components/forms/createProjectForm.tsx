@@ -4,6 +4,10 @@ import styled from "styled-components"
 import { Button } from "@material-ui/core"
 import axios from "../../functions/axios"
 import { useHistory } from "react-router-dom"
+import { useDispatch } from "react-redux"
+import { backendDateConverter, getToday } from "../../functions/cleaningData"
+import { createProjectMiddleWare } from "../redux/project/projectActions"
+import { frontendDatePlus } from "../../functions/cleaningData"
 export interface CreateProjectRadioInputFormsProps {
   ActualClickHandle: any
 }
@@ -28,6 +32,7 @@ const CreateProjectRadioInputSubmitButton = styled.div`
 
 const CreateProjectRadioInputForms: React.FC<CreateProjectRadioInputFormsProps> = props => {
   const [value, setValue] = React.useState("S")
+  const dispatch = useDispatch()
   const history = useHistory()
   const handleChange = (event: any) => {
     setValue(event.target.value)
@@ -37,24 +42,29 @@ const CreateProjectRadioInputForms: React.FC<CreateProjectRadioInputFormsProps> 
     const name = "Fatih"
     const goalname = ""
     const newvalue = value
-    let today: any = new Date()
-    let dd = String(today.getDate()).padStart(2, "0")
-    let mm = String(today.getMonth() + 1).padStart(2, "0") //January is 0!
-    let yyyy = today.getFullYear()
+    const today = getToday()
+    const plannedEndDate = backendDateConverter(
+      frontendDatePlus(String(today), 7)
+    )
+    console.log("planned", plannedEndDate)
 
-    today = mm + "-" + dd + "-" + yyyy
-    axios
-      .post("project/all/", {
-        user: name,
-        typeofproject: newvalue,
-        goal: goalname,
-        startDate: today,
-        plannedEndDate: null
-      })
-      .then(res => {
-        history.push(`/project/detail/${res.data.id}`)
-      })
-      .catch(err => prompt(err))
+    dispatch(
+      createProjectMiddleWare(name, newvalue, goalname, today, plannedEndDate)
+    )
+
+    // history.push(`/project/detail/${res.data.id}`)
+    // axios
+    //   .post("project/all/", {
+    //     user: name,
+    //     typeofproject: newvalue,
+    //     goal: goalname,
+    //     startDate: today,
+    //     plannedEndDate: null
+    //   })
+    //   .then(res => {
+    //     history.push(`/project/detail/${res.data.id}`)
+    //   })
+    //   .catch(err => prompt(err))
   }
 
   return (

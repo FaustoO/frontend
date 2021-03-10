@@ -1,19 +1,24 @@
 import Navbar from "./Navbar"
 import { getdata } from "../functions/api"
 import {
-  BrowserRouter as Router,
+  Router,
   Switch,
   Route,
   Link,
   useParams,
   useLocation
 } from "react-router-dom"
+import history from "./utulities/history"
+
 import BodyComponent from "./Body"
 import React from "react"
 import OverviewProject from "./screens/Overview"
 import ProjectDetailPageProps from "./screens/ProjectDetails"
 import axios from "../functions/axios"
 import DragComponent from "./ui/Draggable"
+import { useSelector, useDispatch } from "react-redux"
+import { fetchProjects } from "../components/redux/project/projectActions"
+
 export interface BaseProps {}
 
 function NavbarComponent() {
@@ -34,19 +39,22 @@ const BaseApp: React.FC<BaseProps> = () => {
       setDetailPage(false)
     }
   }, [window.location.href, detailPage])
+
+  const dispatch = useDispatch()
+  dispatch(fetchProjects())
   return (
-    <Router>
+    <Router history={history}>
       <Route>
         <NavbarComponent></NavbarComponent>
         <BodyComponent>
           <Switch>
-            <Route exact path="/frontend" component={OverviewProject} />
+            <Route exact path="/" />
+            <Route path="/users" />
             <Route path="/project/all" component={OverviewProject} />
             <Route
               path="/project/detail/:id"
               component={ProjectDetailPageProps}
             />
-            <Route path="/users" />
           </Switch>
         </BodyComponent>
       </Route>

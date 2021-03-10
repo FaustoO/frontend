@@ -8,19 +8,26 @@ import MilestonePointer from "../../static/svgicon/milestonepointer.svg"
 import {
   calculateMilestonesPositioning,
   ConvertDateFormat,
-  calculateDatesPositioning
+  calculateDatesPositioning,
+  PercentageConvertation
 } from "../../functions/cleaningData"
 import {
   Convertpercentage,
   LinearProgressBarCleaningData
 } from "../../functions/cleaningData"
 import { Tooltip } from "@material-ui/core"
+import { MilestonesType } from "../redux/project/projectType"
 
 export interface LinearProgressBarProps {
   smallSize?: boolean
   mediumSize?: boolean
+  isMilestoneEditTab?: boolean
   value?: any[] | any
-  milestones?: []
+  milestones?: MilestonesType[]
+  milestoneprogressOfTime?: any
+  milestoneprogress?: any
+  milestonestartdate?: any
+  milestoneeduedate?: any
 }
 const MainContainerBody = styled.div<{ small?: boolean; medium?: boolean }>`
   display: flex;
@@ -130,100 +137,203 @@ const LinearProgressBar: React.FC<LinearProgressBarProps> = props => {
     switch (expression) {
       case "progressofproject":
         // code block
-        return calculateDatesPositioning(
-          props.value[5],
-          props.value[2],
-          props.value[1],
-          props.value[0],
-          props.value[4],
-          props.value[3]
-        ).progressofproject
+        return props.isMilestoneEditTab
+          ? calculateDatesPositioning(
+              props.milestonestartdate,
+              props.milestoneeduedate,
+              props.value[1],
+              props.value[0],
+              props.milestoneprogress,
+              props.milestoneprogressOfTime,
+              true
+            ).progressofproject
+          : calculateDatesPositioning(
+              props.value[5],
+              props.value[2],
+              props.value[1],
+              props.value[0],
+              props.value[4],
+              props.value[3],
+              false
+            ).progressofproject
 
       case "enddate":
         // code block
-        return calculateDatesPositioning(
-          props.value[5],
-          props.value[2],
-          props.value[1],
-          props.value[0],
-          props.value[4],
-          props.value[3]
-        ).fullWidth
+        return props.isMilestoneEditTab
+          ? calculateDatesPositioning(
+              props.milestonestartdate,
+              props.milestoneeduedate,
+              props.value[1],
+              props.value[0],
+              props.milestoneprogress,
+              props.milestoneprogressOfTime,
+              true
+            ).fullWidth
+          : calculateDatesPositioning(
+              props.value[5],
+              props.value[2],
+              props.value[1],
+              props.value[0],
+              props.value[4],
+              props.value[3],
+              false
+            ).fullWidth
       case "GrayLine":
-        return Math.round(
-          calculateDatesPositioning(
-            props.value[5],
-            props.value[2],
-            props.value[1],
-            props.value[0],
-            props.value[4],
-            props.value[3]
-          ).firstline
-        )
+        return props.isMilestoneEditTab
+          ? Math.round(
+              calculateDatesPositioning(
+                props.milestonestartdate,
+                props.milestoneeduedate,
+                props.value[1],
+                props.value[0],
+                props.milestoneprogress,
+                props.milestoneprogressOfTime,
+                true
+              ).firstline
+            )
+          : Math.round(
+              calculateDatesPositioning(
+                props.value[5],
+                props.value[2],
+                props.value[1],
+                props.value[0],
+                props.value[4],
+                props.value[3],
+                false
+              ).firstline
+            )
       case "YellowLine":
-        return Math.round(
-          calculateDatesPositioning(
-            props.value[5],
-            props.value[2],
-            props.value[1],
-            props.value[0],
-            props.value[4],
-            props.value[3]
-          ).secondlineWidth
-        )
+        return props.isMilestoneEditTab
+          ? Math.round(
+              calculateDatesPositioning(
+                props.milestonestartdate,
+                props.milestoneeduedate,
+                props.value[1],
+                props.value[0],
+                props.milestoneprogress,
+                props.milestoneprogressOfTime,
+                true
+              ).secondlineWidth
+            )
+          : Math.round(
+              calculateDatesPositioning(
+                props.value[5],
+                props.value[2],
+                props.value[1],
+                props.value[0],
+                props.value[4],
+                props.value[3],
+                false
+              ).secondlineWidth
+            )
       case "FullWidth":
-        return calculateDatesPositioning(
-          props.value[5],
-          props.value[2],
-          props.value[1],
-          props.value[0],
-          props.value[4],
-          props.value[3]
-        ).fullWidth
+        return props.isMilestoneEditTab
+          ? calculateDatesPositioning(
+              props.milestonestartdate,
+              props.milestoneeduedate,
+              props.value[1],
+              props.value[0],
+              props.milestoneprogress,
+              props.milestoneprogressOfTime,
+              true
+            ).fullWidth
+          : calculateDatesPositioning(
+              props.value[5],
+              props.value[2],
+              props.value[1],
+              props.value[0],
+              props.value[4],
+              props.value[3],
+              false
+            ).fullWidth
       case "Isexpired":
-        return calculateDatesPositioning(
-          props.value[5],
-          props.value[2],
-          props.value[1],
-          props.value[0],
-          props.value[4],
-          props.value[3]
-        ).isexpired
+        return props.isMilestoneEditTab
+          ? calculateDatesPositioning(
+              props.milestonestartdate,
+              props.milestoneeduedate,
+              props.value[1],
+              props.value[0],
+              props.milestoneprogress,
+              props.milestoneprogressOfTime,
+              true
+            ).isexpired
+          : calculateDatesPositioning(
+              props.value[5],
+              props.value[2],
+              props.value[1],
+              props.value[0],
+              props.value[4],
+              props.value[3],
+              false
+            ).isexpired
       case "widthofGray":
-        return calculateDatesPositioning(
-          props.value[5],
-          props.value[2],
-          props.value[1],
-          props.value[0],
-          props.value[4],
-          props.value[3]
-        ).fullWidthGray
+        return props.isMilestoneEditTab
+          ? calculateDatesPositioning(
+              props.milestonestartdate,
+              props.milestoneeduedate,
+              props.value[1],
+              props.value[0],
+              props.milestoneprogress,
+              props.milestoneprogressOfTime,
+              true
+            ).fullWidthGray
+          : calculateDatesPositioning(
+              props.value[5],
+              props.value[2],
+              props.value[1],
+              props.value[0],
+              props.value[4],
+              props.value[3],
+              false
+            ).fullWidthGray
       case "enddate-startdate":
-        return calculateDatesPositioning(
-          props.value[5],
-          props.value[2],
-          props.value[1],
-          props.value[0],
-          props.value[4],
-          props.value[3]
-        ).diffstartdateenddate
+        return props.isMilestoneEditTab
+          ? calculateDatesPositioning(
+              props.milestonestartdate,
+              props.milestoneeduedate,
+              props.value[1],
+              props.value[0],
+              props.milestoneprogress,
+              props.milestoneprogressOfTime,
+              true
+            ).diffstartdateenddate
+          : calculateDatesPositioning(
+              props.value[5],
+              props.value[2],
+              props.value[1],
+              props.value[0],
+              props.value[4],
+              props.value[3],
+              false
+            ).diffstartdateenddate
       case "plannedenddate-startdate":
-        return calculateDatesPositioning(
-          props.value[5],
-          props.value[2],
-          props.value[1],
-          props.value[0],
-          props.value[4],
-          props.value[3]
-        ).diffstartdateplannedenddate
+        return props.isMilestoneEditTab
+          ? calculateDatesPositioning(
+              props.milestonestartdate,
+              props.milestoneeduedate,
+              props.value[1],
+              props.value[0],
+              props.milestoneprogress,
+              props.milestoneprogressOfTime,
+              true
+            ).diffstartdateplannedenddate
+          : calculateDatesPositioning(
+              props.value[5],
+              props.value[2],
+              props.value[1],
+              props.value[0],
+              props.value[4],
+              props.value[3],
+              false
+            ).diffstartdateplannedenddate
       default:
         return 0
       // code block
     }
   }
-  React.useEffect(() => {
-    console.log(getLocationOnProgressBar("progressofproject") > 100)
-  }, [])
+  // React.useEffect(() => {
+  //   console.log(getLocationOnProgressBar("progressofproject") > 100)
+  // }, [])
   return (
     <TopHeaderStatusBarContainer>
       <MainContainerTop small={props.smallSize}>
@@ -242,7 +352,9 @@ const LinearProgressBar: React.FC<LinearProgressBarProps> = props => {
           title={`Project Progress %${
             getLocationOnProgressBar("progressofproject") >= 100
               ? 100
-              : Math.round(getLocationOnProgressBar("progressofproject"))
+              : props.isMilestoneEditTab
+              ? Math.floor(getLocationOnProgressBar("progressofproject"))
+              : Math.floor(PercentageConvertation(props.value[4]))
           }`}
         >
           <BigPointerIcon
@@ -251,7 +363,7 @@ const LinearProgressBar: React.FC<LinearProgressBarProps> = props => {
             position={
               getLocationOnProgressBar("progressofproject") >= 100
                 ? 97.5
-                : getLocationOnProgressBar("progressofproject")
+                : getLocationOnProgressBar("progressofproject") - 1.5
             }
             src={BigPointer}
           ></BigPointerIcon>
